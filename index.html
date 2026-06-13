@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Origin &amp; Evolution of Man — A Field Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+  :root{
+    /* stratigraphic earth palette, oldest (deep) -> newest (surface) */
+    --soil:#1b1510;
+    --soil-2:#241c15;
+    --umber:#6b4423;
+    --sienna:#8b5a2b;
+    --ochre:#a8763e;
+    --sand:#c19552;
+    --pale:#d4b483;
+    --bone:#ece3d0;
+    --bone-dim:#b8ac95;
+    --patina:#4fa392;   /* oxidized copper accent */
+    --patina-bright:#69c4b1;
+    --clay:#c44536;
+    --line:rgba(212,180,131,0.16);
+    --display:"Fraunces",Georgia,serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--soil);
+    color:var(--bone);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* faint sediment striations across the whole page */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(168,118,62,0.025) 38px 39px),
+      radial-gradient(120% 80% at 50% -10%, rgba(168,118,62,0.10), transparent 60%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 28px}
+
+  .mono{font-family:var(--mono);letter-spacing:0.04em}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--patina-bright);
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{padding:74px 0 30px;position:relative}
+  .field-tag{
+    display:inline-flex;gap:14px;align-items:center;
+    border:1px solid var(--line);border-radius:2px;
+    padding:7px 14px;margin-bottom:34px;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--bone-dim);background:rgba(0,0,0,.18);
+  }
+  .field-tag b{color:var(--pale);font-weight:600}
+  h1.title{
+    font-family:var(--display);font-weight:900;
+    font-size:clamp(2.8rem,8vw,6.4rem);line-height:.96;
+    letter-spacing:-.02em;color:var(--bone);
+    font-optical-sizing:auto;
+  }
+  h1.title em{font-style:italic;font-weight:400;color:var(--sand)}
+  .lede{
+    max-width:620px;margin-top:24px;font-size:1.12rem;color:var(--bone-dim);
+  }
+  .lede b{color:var(--bone);font-weight:500}
+
+  /* lineage strip in hero */
+  .lineage{
+    margin-top:52px;display:flex;align-items:flex-end;gap:0;
+    border-bottom:1px solid var(--line);overflow-x:auto;padding-bottom:2px;
+    scrollbar-width:thin;scrollbar-color:var(--umber) transparent;
+  }
+  .lin-node{
+    flex:1 0 auto;min-width:118px;text-align:center;
+    padding:14px 8px 16px;cursor:pointer;border:none;background:none;
+    color:var(--bone-dim);position:relative;transition:.25s;
+    border-bottom:3px solid transparent;
+  }
+  .lin-node .lin-head{
+    height:50px;display:flex;align-items:flex-end;justify-content:center;
+    margin:0 auto 8px;transition:.3s;
+  }
+  .lin-head .skull-svg{height:50px;width:auto}
+  .lin-head .skull-svg .zy,.lin-head .skull-svg .bw,.lin-head .skull-svg .ns,
+  .lin-head .skull-svg .er,.lin-head .skull-svg .th,.lin-head .skull-svg .en{display:none}
+  .lin-head .skull-svg .bc,.lin-head .skull-svg .fc,.lin-head .skull-svg .mn{
+    fill:rgba(232,221,198,.85);stroke:var(--pale);stroke-width:4;stroke-linejoin:round}
+  .lin-head .skull-svg .ob{fill:var(--soil);stroke:var(--pale);stroke-width:3}
+  .lin-node .ln-name{font-family:var(--display);font-weight:500;font-size:.92rem;color:var(--pale);line-height:1.15}
+  .lin-node .ln-mya{font-family:var(--mono);font-size:.62rem;letter-spacing:.04em;color:var(--bone-dim);margin-top:5px;display:block}
+  .lin-node:hover{color:var(--bone)}
+  .lin-node:hover .lin-head{transform:translateY(-3px)}
+  .lin-node[aria-selected="true"]{border-bottom-color:var(--patina-bright)}
+  .lin-node[aria-selected="true"] .ln-name{color:var(--patina-bright)}
+  .lin-node[aria-selected="true"] .lin-head .skull-svg .bc,
+  .lin-node[aria-selected="true"] .lin-head .skull-svg .fc,
+  .lin-node[aria-selected="true"] .lin-head .skull-svg .mn{stroke:var(--patina-bright);fill:rgba(105,196,177,.22)}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:64px 0;position:relative}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:34px;flex-wrap:wrap}
+  .sec-head h2{
+    font-family:var(--display);font-weight:600;font-size:clamp(1.7rem,3.6vw,2.6rem);
+    letter-spacing:-.01em;color:var(--bone);
+  }
+  .sec-head .num{font-family:var(--mono);color:var(--ochre);font-size:.8rem;letter-spacing:.1em}
+
+  /* ---------- EXPLORER ---------- */
+  .explorer{display:grid;grid-template-columns:0.95fr 1.25fr;gap:40px;align-items:start}
+  .specimen-visual{
+    position:sticky;top:24px;
+    border:1px solid var(--line);border-radius:4px;
+    background:linear-gradient(180deg, rgba(107,68,35,.18), rgba(0,0,0,.22));
+    padding:30px 28px 26px;text-align:center;
+  }
+  .sv-label{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-dim)}
+  .head-stage{height:240px;display:flex;align-items:center;justify-content:center;margin:6px 0 2px}
+  .skull-svg{display:block}
+  .head-stage .skull-svg{height:236px;width:auto;max-width:100%}
+  .head-stage .skull-svg{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+  .head-stage.show .skull-svg{opacity:1;transform:none}
+  .head-cap{font-family:var(--mono);font-size:.62rem;letter-spacing:.04em;color:var(--bone-dim);margin:2px 0 0}
+  .head-cap b{color:var(--pale);font-weight:500}
+  .cc-chip{display:inline-flex;gap:11px;align-items:baseline;margin-top:16px;border:1px solid var(--line);border-radius:3px;padding:8px 15px;background:rgba(0,0,0,.18)}
+  .cc-chip-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-dim)}
+  .cc-readout{font-family:var(--mono);font-weight:600}
+  #ccNum{font-size:1.5rem;color:var(--patina-bright);line-height:1}
+  #ccUnit{font-size:.72rem;color:var(--bone-dim);letter-spacing:.06em}
+  .sv-name{font-family:var(--display);font-weight:600;font-size:1.55rem;margin-top:18px;color:var(--bone)}
+  .sv-epithet{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--patina-bright);margin-top:4px}
+  .sv-bench{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:.8rem;color:var(--bone-dim);font-family:var(--mono)}
+  .sv-bench span{color:var(--pale)}
+
+  .nav-row{display:flex;gap:10px;margin-bottom:22px}
+  .nav-btn{
+    flex:1;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;
+    background:rgba(0,0,0,.2);border:1px solid var(--line);color:var(--bone-dim);
+    padding:10px;border-radius:3px;cursor:pointer;transition:.2s;text-transform:uppercase;
+  }
+  .nav-btn:hover{border-color:var(--patina);color:var(--patina-bright)}
+  .nav-btn:focus-visible{outline:2px solid var(--patina-bright);outline-offset:2px}
+
+  .record dl{display:grid;grid-template-columns:1fr;gap:0}
+  .rec-row{
+    display:grid;grid-template-columns:170px 1fr;gap:20px;
+    padding:16px 0;border-top:1px solid var(--line);align-items:start;
+  }
+  .rec-row:last-child{border-bottom:1px solid var(--line)}
+  .rec-row dt{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ochre);padding-top:3px;
+  }
+  .rec-row dd{font-size:1rem;color:var(--bone)}
+  .rec-row dd.muted{color:var(--bone-dim);font-style:italic}
+
+  /* ---------- CRANIAL CHART ---------- */
+  .chart{margin-top:8px}
+  .bar-row{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .bar-name{width:150px;flex-shrink:0;font-family:var(--display);font-size:.95rem;color:var(--pale);text-align:right}
+  .bar-track{flex:1;height:30px;background:rgba(0,0,0,.22);border-radius:3px;position:relative;overflow:hidden}
+  .bar-fill{
+    height:100%;border-radius:3px;width:0;
+    background:linear-gradient(90deg,var(--umber),var(--sand));
+    transition:width 1s cubic-bezier(.2,.8,.2,1);
+    display:flex;align-items:center;justify-content:flex-end;padding-right:10px;
+  }
+  .bar-fill.hi{background:linear-gradient(90deg,var(--patina),var(--patina-bright))}
+  .bar-val{font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--soil)}
+  .bar-na{font-family:var(--mono);font-size:.7rem;color:var(--bone-dim);font-style:italic;padding-left:12px;align-self:center}
+  .chart-axis{display:flex;justify-content:space-between;margin-left:166px;margin-top:6px;font-family:var(--mono);font-size:.64rem;color:var(--bone-dim)}
+
+  .visual-stage{position:relative;min-height:240px;display:flex;align-items:center;justify-content:center}
+  .photo-stage{width:100%;display:flex;align-items:center;justify-content:center}
+  .photo-stage img{max-height:236px;max-width:100%;border-radius:4px;border:1px solid var(--line);background:#0f0c0a;display:block}
+  .view-toggle{display:inline-flex;margin:0 auto 12px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .vt-btn{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 13px;background:rgba(0,0,0,.2);color:var(--bone-dim);border:none;cursor:pointer;transition:.2s}
+  .vt-btn+.vt-btn{border-left:1px solid var(--line)}
+  .vt-btn.active{background:var(--patina);color:var(--soil)}
+  .vt-btn:hover:not(.active){color:var(--bone)}
+  .photo-credit{font-family:var(--mono);font-size:.57rem;line-height:1.5;color:var(--bone-dim);margin-top:10px;max-width:240px;margin-left:auto;margin-right:auto;letter-spacing:.01em}
+  .photo-credit a{color:var(--patina-bright);text-decoration:none}
+  .photo-credit a:hover{text-decoration:underline}
+
+  .si-link{
+    display:inline-block;margin-top:16px;font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;
+    color:var(--patina-bright);text-decoration:none;border:1px solid var(--patina);border-radius:3px;
+    padding:8px 13px;transition:.2s;background:rgba(79,163,146,.06);
+  }
+  .si-link:hover{background:var(--patina);color:var(--soil)}
+  .si-link:focus-visible{outline:2px solid var(--patina-bright);outline-offset:2px}
+  .si-note{font-family:var(--mono);font-size:.56rem;line-height:1.5;color:var(--bone-dim);margin-top:9px;max-width:230px;margin-left:auto;margin-right:auto;letter-spacing:.02em}
+
+  /* ---------- MAP ---------- */
+  .map-hint{font-family:var(--mono);font-size:.72rem;color:var(--bone-dim);margin-bottom:14px;letter-spacing:.03em}
+  #map{
+    height:460px;width:100%;border:1px solid var(--line);border-radius:4px;
+    background:var(--soil-2);margin-bottom:22px;
+  }
+  #map.map-fallback{display:flex;align-items:center;justify-content:center;padding:30px;height:200px}
+  .map-note{max-width:540px;text-align:center;color:var(--bone-dim);font-family:var(--mono);font-size:.82rem;line-height:1.65}
+  .leaflet-container{background:var(--soil-2)!important;font-family:var(--mono)!important}
+  .leaflet-tooltip{
+    background:var(--soil)!important;border:1px solid var(--patina)!important;color:var(--bone)!important;
+    font-family:var(--mono)!important;font-size:.68rem!important;box-shadow:none!important;border-radius:3px!important;padding:4px 8px!important;
+  }
+  .leaflet-tooltip b{color:var(--patina-bright)}
+  .leaflet-tooltip-top:before{border-top-color:var(--patina)!important}
+  .leaflet-bar a{background:var(--soil-2)!important;color:var(--bone)!important;border-color:var(--line)!important}
+  .leaflet-bar a:hover{background:var(--umber)!important}
+  .leaflet-control-attribution{background:rgba(27,21,16,.7)!important;color:var(--bone-dim)!important}
+  .leaflet-control-attribution a{color:var(--ochre)!important}
+
+  /* ---------- SITES ---------- */
+  .sites{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .site{background:var(--soil-2);padding:22px 20px;transition:.25s;cursor:pointer}
+  .site[aria-current="true"]{background:rgba(79,163,146,.14);box-shadow:inset 3px 0 0 var(--patina-bright)}
+  .site:hover{background:rgba(107,68,35,.22)}
+  .site .s-name{font-family:var(--display);font-size:1.05rem;color:var(--bone);font-weight:600}
+  .site .s-loc{font-size:.92rem;color:var(--pale);margin-top:6px}
+  .site .s-mya{font-family:var(--mono);font-size:.66rem;color:var(--patina-bright);letter-spacing:.08em;margin-top:10px;display:block}
+
+  /* ---------- NARRATIVE ---------- */
+  .narrative{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .narrative p{color:var(--bone-dim);margin-bottom:16px;font-size:1.02rem}
+  .narrative p b{color:var(--bone);font-weight:500}
+  .pull{
+    grid-column:1/-1;border-left:3px solid var(--patina);padding:8px 0 8px 24px;
+    font-family:var(--display);font-style:italic;font-size:1.5rem;color:var(--sand);
+    margin:6px 0;line-height:1.35;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:50px 0 70px;border-top:1px solid var(--line);margin-top:30px}
+  footer .f-grid{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+  footer .mono{font-size:.74rem;color:var(--bone-dim)}
+  footer .f-title{font-family:var(--display);font-size:1.2rem;color:var(--pale)}
+
+  @media (max-width:840px){
+    .explorer{grid-template-columns:1fr;gap:26px}
+    .specimen-visual{position:static}
+    .narrative{grid-template-columns:1fr}
+    .rec-row{grid-template-columns:1fr;gap:4px}
+    .rec-row dt{padding-top:0}
+    .bar-name{width:110px;font-size:.82rem}
+    .chart-axis{margin-left:126px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="field-tag mono">
+      <span>Field Record</span><span>·</span><span><b>7</b> specimens</span><span>·</span><span><b>25</b> mya → present</span>
+    </div>
+    <h1 class="title">Origin &amp; the long climb<br>to <em>Homo sapiens</em></h1>
+    <p class="lede">Roughly <b>25 million years</b> separate the first ape-like primates from modern humans. Read the lineage as a sediment column — each layer a species, each one carrying a little more brain than the last. Select a specimen to open its record.</p>
+
+    <!-- interactive lineage strip -->
+    <div class="lineage" id="lineage" role="tablist" aria-label="Human evolution lineage"></div>
+  </header>
+
+  <!-- ============ EXPLORER ============ -->
+  <section id="explorer">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Specimen record</h2>
+    </div>
+
+    <div class="explorer">
+      <!-- left: brain disc -->
+      <aside class="specimen-visual">
+        <div class="view-toggle" id="viewToggle" hidden>
+          <button class="vt-btn" id="vtPhoto" type="button">Photo</button>
+          <button class="vt-btn" id="vtDiagram" type="button">Diagram</button>
+        </div>
+        <div class="sv-label" id="svLabel">Bare-skull lateral view</div>
+        <div class="visual-stage">
+          <div class="photo-stage" id="photoStage" hidden><img id="photoImg" alt="" loading="lazy"></div>
+          <div class="head-stage" id="headStage"></div>
+        </div>
+        <div class="photo-credit" id="photoCredit" hidden></div>
+        <div class="head-cap" id="headCap"><b id="svSpec">—</b> · braincase tint ∝ capacity</div>
+        <div class="sv-name" id="svName">—</div>
+        <div class="sv-epithet" id="svEpithet">—</div>
+        <div class="cc-chip">
+          <span class="cc-chip-label">Cranial capacity</span>
+          <span class="cc-readout"><span id="ccNum">—</span> <span id="ccUnit">cc</span></span>
+        </div>
+        <div class="sv-bench" id="svBench"></div>
+        <a class="si-link" id="siLink" target="_blank" rel="noopener noreferrer">View fossil at the Smithsonian ↗</a>
+        <div class="si-note">On-page skull is an original illustration; the link opens the actual fossil at the Smithsonian.</div>
+      </aside>
+
+      <!-- right: full record -->
+      <div class="record">
+        <div class="nav-row">
+          <button class="nav-btn" id="prevBtn">‹ Older</button>
+          <button class="nav-btn" id="nextBtn">Newer ›</button>
+        </div>
+        <dl id="recordList"></dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CRANIAL CHART ============ -->
+  <section id="brains">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>The brain keeps growing</h2>
+    </div>
+    <p class="lede" style="margin-bottom:30px">The single thread that runs the whole lineage. Where the table records no measurement, the bar is left open.</p>
+    <div class="chart" id="chart"></div>
+    <div class="chart-axis"><span>0</span><span>500</span><span>1000</span><span>1500 cc</span></div>
+  </section>
+
+  <!-- ============ SITES ============ -->
+  <section id="sites">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Where the bones surfaced</h2>
+    </div>
+    <p class="map-hint">Pick a specimen — in the lineage above or the cards below — and the map frames its fossil sites and links them. Click any marker to jump to that specimen.</p>
+    <div id="map" aria-label="World map of fossil record sites"></div>
+    <div class="sites" id="siteGrid"></div>
+  </section>
+
+  <!-- ============ NARRATIVE ============ -->
+  <section id="story">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>The story in the strata</h2>
+    </div>
+    <div class="narrative">
+      <div>
+        <p>About <b>15 mya</b>, primates called <i>Dryopithecus</i> and <i>Ramapithecus</i> were living. They were hairy and moved like gorillas and chimpanzees. <i>Ramapithecus</i> was the more man-like of the two, while <i>Dryopithecus</i> stayed closer to the apes.</p>
+        <p>Fossils of man-like bones found in <b>Ethiopia and Tanzania</b> carried hominid features, suggesting that around <b>3–4 mya</b> man-like primates were walking in eastern Africa. They were probably no taller than four feet, yet they walked upright.</p>
+        <p>By <b>2 mya</b>, the australopithecines were living in the East African grasslands. The evidence shows they hunted with stone weapons but ate mostly fruit. Among the discovered bones, some were clearly different — and this creature, the first true hominid, was named <i>Homo habilis</i>, with a brain capacity of <b>650–800 cc</b>. It probably did not eat meat.</p>
+      </div>
+      <div>
+        <p>Fossils found in <b>Java in 1891</b> revealed the next stage, <i>Homo erectus</i>, around <b>1.5 mya</b>, carrying a larger brain of about <b>900 cc</b>. <i>Homo erectus</i> probably ate meat.</p>
+        <p>The <b>Neanderthal man</b>, with a brain of <b>1400 cc</b>, lived across the Near East and central Asia between 100,000 and 40,000 years ago. They used hides to cover their bodies and buried their dead.</p>
+        <p><i>Homo sapiens</i> arose in Africa, spread across the continents, and developed into distinct races. During the ice age, between <b>75,000 and 10,000 years ago</b>, modern <i>Homo sapiens</i> emerged. Cave art appeared about <b>18,000 years ago</b>; agriculture followed around <b>10,000 years ago</b>, and human settlements began. The rest is history.</p>
+      </div>
+      <blockquote class="pull">Each layer carries a little more brain than the one beneath it — from roughly 500 cc to 1450 cc across the climb.</blockquote>
+    </div>
+  </section>
+
+  <footer>
+    <div class="f-grid">
+      <div>
+        <div class="f-title">Origin &amp; Evolution of Man</div>
+        <div class="mono">Built from Table 5.18 &amp; chapter text · Static site, ready for GitHub Pages</div>
+      </div>
+      <div class="mono">Use ← → keys to walk the lineage</div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+/* ---------- DATA (from Table 5.18 + chapter text) ---------- */
+const SPECIES = [
+  { id:"dryo", name:"Dryopithecus", epithet:"Ape-like", mya:"20–25 mya",
+    cc:null, ccText:"Not recorded",
+    appearance:"Ape-like",
+    site:"Lake Victoria, Africa; Haritalyangar, Himachal Pradesh",
+    period:"Miocene epoch, 20–25 mya",
+    skeletal:"Not recorded in this study",
+    posture:"Semi-erect",
+    special:"Close similarity to the chimpanzee",
+    c1:"#a8763e", c2:"#6b4423" },
+
+  { id:"rama", name:"Ramapithecus", epithet:"Man-like", mya:"12–14 mya",
+    cc:null, ccText:"Not recorded",
+    appearance:"Man-like",
+    site:"Shivalik Hills, India; also Kenya",
+    period:"Miocene & early Pliocene, 14–12 mya",
+    skeletal:"Not recorded in this study",
+    posture:"Erect",
+    special:"Regarded as the more man-like of the early apes",
+    c1:"#b58148", c2:"#7a4f28" },
+
+  { id:"austra", name:"Australopithecus", epithet:"Ape–man link", mya:"1.8–4 mya",
+    cc:525, ccText:"450–600 cc",
+    appearance:"Connecting link between ape and man",
+    site:"Taung, South Africa; Ethiopia; Tanzania",
+    period:"Late Pliocene / early Pleistocene, ~4–1.8 mya",
+    skeletal:"Not taller than 4 feet; jaws larger; prognathous face; chin absent; lumbar curvature present",
+    posture:"Upright",
+    special:"A man with an ape's brain",
+    c1:"#c19552", c2:"#8b5a2b" },
+
+  { id:"habilis", name:"Homo habilis", epithet:"Handy man", mya:"1.4–2.5 mya",
+    cc:725, ccText:"650–800 cc",
+    appearance:"Handy man-like",
+    site:"Olduvai Gorge, Tanzania, Africa",
+    period:"Late Pliocene / early Pleistocene, ~2.5–1.4 mya",
+    skeletal:"Lower jaw lightly built; dentition more like modern man; smaller molars",
+    posture:"Erect",
+    special:"Probably did not eat meat; made tools from stones; nicknamed the handy man",
+    c1:"#cda361", c2:"#9a6a33" },
+
+  { id:"erectus", name:"Homo erectus", epithet:"Ape man", mya:"1.5 mya",
+    cc:900, ccText:"900 cc",
+    appearance:"Ape man",
+    site:"Java & Peking",
+    period:"Middle Pleistocene epoch, ~1.5 mya",
+    skeletal:"~5 feet tall; prognathous face; massive jaws; huge teeth; chin absent; bony brow ridges present",
+    posture:"Erect",
+    special:"Probably ate meat; omnivorous; might have used fire",
+    c1:"#5fae9c", c2:"#3f8576" },
+
+  { id:"neander", name:"Neanderthal man", epithet:"Advanced prehistoric", mya:"40–100 kya",
+    cc:1400, ccText:"1400 cc",
+    appearance:"Advanced prehistoric man",
+    site:"Neanderthal Valley, Germany",
+    period:"Late Pleistocene, 100,000–40,000 yrs ago",
+    skeletal:"Heavily built and short; prominent brow ridges; low forehead; deep jaws; chin absent; outwardly curved thigh bones",
+    posture:"Erect",
+    special:"Used hide; buried their dead; constructed flint tools",
+    c1:"#69c4b1", c2:"#4fa392" },
+
+  { id:"sapiens", name:"Homo sapiens", epithet:"Modern man", mya:"present",
+    cc:1450, ccText:"1450 cc",
+    appearance:"Modern man",
+    site:"Africa (then across all continents)",
+    period:"Arose in the Ice Age, ~75,000–10,000 yrs ago",
+    skeletal:"Fully modern skeleton",
+    posture:"Erect",
+    special:"Developed distinct races; created cave art about 18,000 yrs ago",
+    c1:"#ece3d0", c2:"#69c4b1" }
+];
+
+/* ---------- GEOCODED FOSSIL SITES (lat, lng) ---------- */
+const SITES_GEO = {
+  dryo:    [ {label:"Lake Victoria, Africa", lat:-1.0, lng:33.0}, {label:"Haritalyangar, Himachal Pradesh", lat:31.42, lng:76.43} ],
+  rama:    [ {label:"Shivalik Hills, India", lat:30.9, lng:77.1}, {label:"Fort Ternan, Kenya", lat:-0.21, lng:35.35} ],
+  austra:  [ {label:"Taung, South Africa", lat:-27.53, lng:24.78}, {label:"Hadar, Ethiopia", lat:11.16, lng:40.58}, {label:"Laetoli, Tanzania", lat:-3.23, lng:35.18} ],
+  habilis: [ {label:"Olduvai Gorge, Tanzania", lat:-2.99, lng:35.35} ],
+  erectus: [ {label:"Trinil, Java", lat:-7.40, lng:111.46}, {label:"Zhoukoudian (Peking), China", lat:39.68, lng:115.92} ],
+  neander: [ {label:"Neander Valley, Germany", lat:51.23, lng:6.95} ],
+  sapiens: [ {label:"East Africa — origin", lat:5.43, lng:35.92} ]
+};
+SPECIES.forEach(s => s.geo = SITES_GEO[s.id] || []);
+
+/* ---------- BARE-SKULL LATERAL GEOMETRY (drawn illustrations, not casts) ---------- */
+/* Each skull keyed to a representative specimen; braincase + face + mandible as
+   smooth paths, with orbit, nasal aperture, zygomatic arch, dentition, brow torus
+   and a capacity-scaled endocranial tint. Facing left. */
+const SKULL_DATA = {
+  dryo:{spec:"generalized dryopithecine",known:false,bc:[[80,62],[96,48],[118,50],[134,64],[138,84],[128,100],[106,104],[86,96],[76,82]],face:[[76,80],[80,98],[88,118],[102,132],[54,136],[40,122],[46,100],[62,84]],mand:[[116,100],[104,106],[58,132],[46,138],[52,150],[90,152],[112,142],[120,116]],zygo:[[62,102],[90,100],[114,100],[116,106],[92,107],[64,108]],brow:[[44,82],[74,80],[76,90],[44,92]],orbit:[58,94,11,12],nasal:[[50,110],[56,118],[50,128],[45,119]],ear:[112,100,3.4],uteeth:[54,100,134],lteeth:[58,102,139],endo:[104,78,20,17]},
+  rama:{spec:"generalized (Sivapithecus grade)",known:false,bc:[[80,58],[96,44],[120,46],[138,60],[142,82],[132,100],[108,104],[86,96],[74,80]],face:[[74,78],[78,96],[86,116],[100,130],[54,134],[40,120],[46,98],[60,82]],mand:[[118,100],[106,106],[58,130],[46,136],[52,148],[90,150],[114,142],[122,116]],zygo:[[62,100],[90,98],[116,98],[118,104],[92,105],[64,106]],brow:[[44,80],[74,78],[76,88],[44,90]],orbit:[58,92,11,12],nasal:[[50,108],[56,116],[50,126],[45,117]],ear:[114,98,3.4],uteeth:[54,98,132],lteeth:[58,100,137],endo:[106,76,21,18]},
+  austra:{spec:"after Sts 5 · A. africanus",known:true,bc:[[78,56],[96,40],[120,42],[140,58],[146,82],[136,102],[112,108],[88,100],[74,82]],face:[[74,80],[78,98],[86,116],[100,128],[60,132],[46,120],[50,100],[62,84]],mand:[[120,104],[108,110],[64,130],[52,136],[58,148],[92,150],[116,142],[124,120]],zygo:[[64,100],[92,98],[118,98],[120,104],[94,105],[66,106]],brow:[[48,80],[74,78],[76,86],[48,88]],orbit:[60,92,11,12],nasal:[[52,108],[58,116],[52,126],[47,117]],ear:[116,98,3.4],uteeth:[56,98,130],lteeth:[60,100,135],endo:[108,72,22,18]},
+  habilis:{spec:"after KNM-ER 1813",known:true,bc:[[78,48],[98,32],[126,34],[148,52],[154,80],[142,102],[114,108],[86,98],[72,76]],face:[[72,76],[76,94],[84,112],[98,124],[58,128],[46,116],[50,96],[60,80]],mand:[[122,104],[110,110],[62,126],[52,132],[58,144],[92,148],[118,140],[126,118]],zygo:[[62,98],[92,96],[120,96],[122,102],[94,103],[64,104]],brow:[[46,78],[74,76],[76,84],[46,86]],orbit:[58,90,11,12],nasal:[[50,106],[56,114],[50,124],[45,115]],ear:[118,96,3.4],uteeth:[54,96,126],lteeth:[58,98,131],endo:[110,68,26,21]},
+  erectus:{spec:"after Sangiran 17 · Java",known:true,bc:[[80,46],[104,34],[136,38],[160,60],[164,86],[150,108],[118,112],[88,102],[72,76]],face:[[72,76],[76,94],[84,114],[98,128],[54,132],[42,118],[48,98],[60,80]],mand:[[124,108],[112,114],[58,130],[48,136],[54,150],[92,154],[120,146],[130,122]],zygo:[[60,100],[94,98],[124,98],[126,106],[96,107],[62,108]],brow:[[42,80],[78,78],[80,90],[42,92]],orbit:[56,92,12,13],nasal:[[48,108],[54,118],[48,128],[43,118]],ear:[122,98,3.4],uteeth:[52,98,130],lteeth:[56,100,135],endo:[114,72,30,23]},
+  neander:{spec:"after La Chapelle-aux-Saints 1",known:true,bc:[[80,42],[106,30],[140,32],[170,54],[176,84],[162,108],[124,114],[90,102],[70,72]],face:[[70,72],[74,92],[82,114],[96,128],[48,132],[36,116],[44,94],[58,76]],mand:[[128,108],[116,114],[54,130],[44,138],[50,152],[92,156],[124,148],[134,122]],zygo:[[58,100],[96,98],[128,98],[130,106],[98,107],[60,108]],brow:[[38,78],[80,76],[82,90],[38,92]],orbit:[54,90,13,14],nasal:[[42,106],[50,118],[42,130],[37,118]],ear:[126,98,3.4],uteeth:[48,98,130],lteeth:[52,100,135],endo:[118,70,34,26]},
+  sapiens:{spec:"after Cro-Magnon 1",known:true,bc:[[68,40],[88,22],[116,20],[146,32],[160,62],[156,94],[136,112],[104,114],[74,98],[60,70]],face:[[62,72],[66,90],[72,108],[84,126],[52,130],[44,118],[46,100],[54,84]],mand:[[120,110],[108,116],[60,134],[50,138],[52,152],[84,156],[116,150],[126,124]],zygo:[[64,102],[92,100],[116,100],[118,106],[94,107],[66,108]],brow:[[54,82],[74,81],[76,86],[54,87]],orbit:[64,92,11,12],nasal:[[50,106],[56,114],[50,124],[46,115]],ear:[114,100,3.4],uteeth:[54,92,130],lteeth:[58,96,135],endo:[108,62,34,30]}
+};
+SPECIES.forEach(s => { s.skull = SKULL_DATA[s.id]; s.spec = SKULL_DATA[s.id].spec; });
+
+/* ---------- SMITHSONIAN HUMAN ORIGINS REFERENCES (links only; images are not freely licensed) ---------- */
+const SI_REF = {
+  dryo:    { href:"https://humanorigins.si.edu/evidence/3d-collection", name:"Miocene ape — predates the Smithsonian Hall of Human Origins", label:"Smithsonian Human Origins \u2197" },
+  rama:    { href:"https://humanorigins.si.edu/evidence/3d-collection", name:"Miocene ape — predates the Smithsonian Hall of Human Origins", label:"Smithsonian Human Origins \u2197" },
+  austra:  { href:"https://3d.si.edu/object/3d/australopithecus-africanus-cranium:ea4abc35-be8e-4787-aec4-ab7e34298f9b", name:"Sts 5 \u2018Mrs Ples\u2019 \u00b7 3D scan, Smithsonian", label:"View fossil in 3D at the Smithsonian \u2197" },
+  habilis: { href:"https://humanorigins.si.edu/evidence/human-fossils/fossils/knm-er-1813", name:"KNM-ER 1813 \u00b7 Smithsonian Human Origins", label:"View fossil at the Smithsonian \u2197" },
+  erectus: { href:"https://3d.si.edu/object/3d/homo-erectus-cranium:0b1d7e98-3dd0-4614-93d7-a2ae3cc9b11c", name:"H. erectus, Dmanisi D2282 \u00b7 3D scan, Smithsonian", label:"View fossil in 3D at the Smithsonian \u2197" },
+  neander: { href:"https://3d.si.edu/object/3d/homo-neanderthalensis-cranium:62c5a1ab-24bc-467d-8566-5e67be2fc41d", name:"La Ferrassie 1 \u00b7 3D scan, Smithsonian", label:"View fossil in 3D at the Smithsonian \u2197" },
+  sapiens: { href:"https://3d.si.edu/object/3d/homo-sapiens-cranium:09d681b2-5ae9-44a8-b444-8e31bb40305e", name:"Cro-Magnon 1 \u00b7 3D scan, Smithsonian", label:"View fossil in 3D at the Smithsonian \u2197" }
+};
+SPECIES.forEach(s => s.si = SI_REF[s.id]);
+
+/* ---------- WIKIMEDIA COMMONS PHOTO CANDIDATES ----------
+   Real cast/fossil photos. The page verifies each file's licence live via the
+   Commons API and only displays it if the licence is free; else the SVG shows. */
+const PHOTO_CANDIDATES = {
+  austra:  ["Skull Australopithecus africanus. In the Cradle of Humankind Museum. South Africa.jpg","Em - Australopithecus africanus, Taung Child - 2.jpg"],
+  habilis: ["Homo habilis-KNM ER 1813.jpg","KNM ER 1813 (H. habilis).png","Cráneo del Homo habilis (Burgos).jpg"],
+  erectus: ["Homo erectus skull cast, World Museum Liverpool.JPG","Homo erectus Java man skull.jpg","Homo Erectus crane AMNH.jpg"],
+  neander: ["Ferrassie skull.jpg"],
+  sapiens: ["Cro-Magnon.jpg"]
+};
+SPECIES.forEach(s => s.photos = PHOTO_CANDIDATES[s.id] || []);
+
+/* Catmull-Rom through a closed loop of points -> smooth SVG path */
+function closedSpline(P){
+  const n = P.length;
+  let d = `M ${P[0][0]},${P[0][1]} `;
+  for(let i=0;i<n;i++){
+    const p0=P[(i-1+n)%n], p1=P[i], p2=P[(i+1)%n], p3=P[(i+2)%n];
+    const c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
+    const c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+    d += `C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0]},${p2[1]} `;
+  }
+  return d + "Z";
+}
+
+function teethTicks(t){
+  const x0=t[0], x1=t[1], y=t[2], n=7, step=(x1-x0)/n;
+  let s="";
+  for(let i=0;i<=n;i++){ const x=(x0+i*step).toFixed(1); s+=`<line x1="${x}" y1="${y-2}" x2="${x}" y2="${y+2}" stroke="#9c8b6e" stroke-width="0.7"/>`; }
+  s+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#9c8b6e" stroke-width="0.7"/>`;
+  return s;
+}
+
+/* Build a labelled bare-skull SVG; endocranial tint scaled to cranial capacity. */
+function skullSVG(s){
+  const k=s.skull, o=k.orbit, e=k.ear, en=k.endo;
+  const endo = k.known
+    ? `<ellipse class="en" cx="${en[0]}" cy="${en[1]}" rx="${en[2]}" ry="${en[3]}" fill="rgba(105,196,177,.45)" transform="rotate(-10 ${en[0]} ${en[1]})"/>`
+    : `<ellipse class="en" cx="${en[0]}" cy="${en[1]}" rx="${en[2]}" ry="${en[3]}" fill="none" stroke="rgba(120,200,184,.7)" stroke-width="1.2" stroke-dasharray="3 3" transform="rotate(-10 ${en[0]} ${en[1]})"/>`;
+  return `<svg viewBox="26 10 162 158" xmlns="http://www.w3.org/2000/svg" class="skull-svg" aria-hidden="true">`
+    + `<path class="bc" d="${closedSpline(k.bc)}" fill="#e8ddc6" stroke="#9c8b6e" stroke-width="1.6"/>`
+    + endo
+    + `<path class="fc" d="${closedSpline(k.face)}" fill="#f1e9d6" stroke="#9c8b6e" stroke-width="1.5"/>`
+    + `<path class="zy" d="${closedSpline(k.zygo)}" fill="#e8ddc6" stroke="#9c8b6e" stroke-width="1"/>`
+    + `<path class="mn" d="${closedSpline(k.mand)}" fill="#f1e9d6" stroke="#9c8b6e" stroke-width="1.5"/>`
+    + `<path class="bw" d="${closedSpline(k.brow)}" fill="#e8ddc6" stroke="#9c8b6e" stroke-width="0.8"/>`
+    + `<ellipse class="ob" cx="${o[0]}" cy="${o[1]}" rx="${o[2]}" ry="${o[3]}" fill="#1b1510" stroke="#9c8b6e" stroke-width="1.4"/>`
+    + `<path class="ns" d="${closedSpline(k.nasal)}" fill="#1b1510" stroke="#9c8b6e" stroke-width="0.8"/>`
+    + `<circle class="er" cx="${e[0]}" cy="${e[1]}" r="${e[2]}" fill="#1b1510" stroke="#9c8b6e" stroke-width="1"/>`
+    + `<g class="th">${teethTicks(k.uteeth)}${teethTicks(k.lteeth)}</g>`
+    + `</svg>`;
+}
+
+const MAX_CC = 1450;
+let current = 0;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- BUILD LINEAGE STRIP ---------- */
+const lineage = document.getElementById("lineage");
+SPECIES.forEach((s, i) => {
+  const btn = document.createElement("button");
+  btn.className = "lin-node";
+  btn.setAttribute("role","tab");
+  btn.setAttribute("aria-selected", i===0 ? "true":"false");
+  btn.innerHTML = `
+    <div class="lin-head">${skullSVG(s)}</div>
+    <div class="ln-name">${s.name.replace("Homo ","H. ")}</div>
+    <span class="ln-mya">${s.mya}</span>`;
+  btn.addEventListener("click", () => select(i));
+  lineage.appendChild(btn);
+});
+
+/* ---------- BUILD CRANIAL CHART ---------- */
+const chart = document.getElementById("chart");
+SPECIES.forEach(s => {
+  const row = document.createElement("div");
+  row.className = "bar-row";
+  if (s.cc){
+    const pct = (s.cc / MAX_CC) * 100;
+    const hi = s.cc >= 900 ? "hi" : "";
+    row.innerHTML = `
+      <div class="bar-name">${s.name}</div>
+      <div class="bar-track"><div class="bar-fill ${hi}" data-pct="${pct}"><span class="bar-val">${s.ccText}</span></div></div>`;
+  } else {
+    row.innerHTML = `
+      <div class="bar-name">${s.name}</div>
+      <div class="bar-track"><span class="bar-na">no measurement recorded</span></div>`;
+  }
+  chart.appendChild(row);
+});
+
+/* animate bars when chart scrolls into view */
+const barObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      chart.querySelectorAll(".bar-fill").forEach(f=>{
+        f.style.width = (reduceMotion ? f.dataset.pct : f.dataset.pct) + "%";
+      });
+      barObserver.disconnect();
+    }
+  });
+},{threshold:0.3});
+barObserver.observe(chart);
+
+/* ---------- BUILD SITES ---------- */
+const siteGrid = document.getElementById("siteGrid");
+SPECIES.forEach((s,i)=>{
+  const d = document.createElement("div");
+  d.className = "site";
+  d.dataset.index = i;
+  d.setAttribute("role","button");
+  d.setAttribute("tabindex","0");
+  d.innerHTML = `
+    <div class="s-name">${s.name}</div>
+    <div class="s-loc">${s.site}</div>
+    <span class="s-mya">${s.mya}</span>`;
+  d.addEventListener("click", ()=>select(i));
+  d.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select(i); }});
+  siteGrid.appendChild(d);
+});
+
+/* ---------- RECORD RENDERING + BRAIN DISC ---------- */
+const recordList = document.getElementById("recordList");
+const headStage = document.getElementById("headStage");
+const svSpec = document.getElementById("svSpec");
+const siLink = document.getElementById("siLink");
+const ccNum = document.getElementById("ccNum");
+const ccUnit = document.getElementById("ccUnit");
+const svName = document.getElementById("svName");
+const svEpithet = document.getElementById("svEpithet");
+const svBench = document.getElementById("svBench");
+const viewToggle = document.getElementById("viewToggle");
+const vtPhoto = document.getElementById("vtPhoto");
+const vtDiagram = document.getElementById("vtDiagram");
+const photoStage = document.getElementById("photoStage");
+const photoImg = document.getElementById("photoImg");
+const photoCredit = document.getElementById("photoCredit");
+const headCap = document.getElementById("headCap");
+const svLabel = document.getElementById("svLabel");
+
+/* ---------- FOSSIL PHOTOS via Wikimedia Commons (runtime licence check) ---------- */
+let viewMode = "photo";              // user preference; falls back to diagram when no photo
+const photoCache = {};               // id -> {status:"loading"|"ok"|"none", data}
+
+function stripHtml(h){ const d=document.createElement("div"); d.innerHTML=h||""; return (d.textContent||"").trim().replace(/\s+/g," "); }
+
+function isFreeLicence(code, shortName){
+  const t=((code||"")+" "+(shortName||"")).toLowerCase();
+  if(t.includes("non-commercial")||t.includes("noncommercial")||/\bnc\b/.test(t)||/-nc/.test(t)) return false;
+  if(t.includes("fair use")||t.includes("non-free")) return false;
+  return t.includes("cc0") || t.includes("public domain") || t.includes("cc-by") || t.includes("cc by") || t.includes("attribution");
+}
+
+async function fetchPhotoInfo(file){
+  const api="https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=560&titles=File:"+encodeURIComponent(file);
+  const res=await fetch(api);
+  const json=await res.json();
+  const pages=json && json.query && json.query.pages;
+  if(!pages) return null;
+  const key=Object.keys(pages)[0];
+  if(key==="-1" || !pages[key].imageinfo) return null;
+  const ii=pages[key].imageinfo[0];
+  const m=ii.extmetadata||{};
+  const code=(m.License&&m.License.value)||"";
+  const short=(m.LicenseShortName&&m.LicenseShortName.value)||"";
+  if(!isFreeLicence(code, short)) return null;
+  return {
+    thumb: ii.thumburl || ii.url,
+    page: ii.descriptionurl || ("https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(file)),
+    artist: stripHtml((m.Artist&&m.Artist.value)) || "Unknown author",
+    licence: short || code || "see source",
+    licenceUrl: (m.LicenseUrl&&m.LicenseUrl.value) || ""
+  };
+}
+
+async function ensurePhoto(s){
+  if(photoCache[s.id]) return;
+  if(!s.photos || !s.photos.length){ photoCache[s.id]={status:"none"}; return; }
+  photoCache[s.id]={status:"loading"};
+  for(const f of s.photos){
+    try{
+      const info=await fetchPhotoInfo(f);
+      if(info){ photoCache[s.id]={status:"ok", data:info}; if(SPECIES[current].id===s.id) renderVisual(s); return; }
+    }catch(e){ /* network/CSP blocked -> fall through to SVG */ }
+  }
+  photoCache[s.id]={status:"none"};
+  if(SPECIES[current].id===s.id) renderVisual(s);
+}
+
+function renderVisual(s){
+  const cache=photoCache[s.id]||{status:"none"};
+  const hasPhoto=cache.status==="ok";
+  const showPhoto=hasPhoto && viewMode==="photo";
+
+  photoStage.hidden=!showPhoto;
+  photoCredit.hidden=!showPhoto;
+  headStage.style.display=showPhoto?"none":"flex";
+  headCap.hidden=showPhoto;
+  svLabel.textContent=showPhoto?"Fossil cast — photograph":"Bare-skull lateral view";
+
+  viewToggle.hidden=!hasPhoto;
+  if(hasPhoto){
+    vtPhoto.classList.toggle("active", viewMode==="photo");
+    vtDiagram.classList.toggle("active", viewMode!=="photo");
+  }
+  if(showPhoto){
+    photoImg.src=cache.data.thumb;
+    photoImg.alt=s.name+" — fossil cast photograph";
+    const lic=cache.data.licenceUrl
+      ? '<a href="'+cache.data.licenceUrl+'" target="_blank" rel="noopener noreferrer">'+cache.data.licence+'</a>'
+      : cache.data.licence;
+    photoCredit.innerHTML='Photo: '+cache.data.artist+' · '+lic+' · <a href="'+cache.data.page+'" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>';
+  }
+}
+
+photoImg.addEventListener("error", ()=>{ const s=SPECIES[current]; photoCache[s.id]={status:"none"}; renderVisual(s); });
+vtPhoto.addEventListener("click", ()=>{ viewMode="photo"; renderVisual(SPECIES[current]); });
+vtDiagram.addEventListener("click", ()=>{ viewMode="diagram"; renderVisual(SPECIES[current]); });
+
+const FIELDS = [
+  ["appearance","Appearance"],
+  ["site","Site of fossil record"],
+  ["period","Period"],
+  ["skeletal","Skeletal features"],
+  ["posture","Posture"],
+  ["ccText","Cranial capacity"],
+  ["special","Special features"]
+];
+
+let ccAnim;
+function animateCC(target){
+  clearInterval(ccAnim);
+  if(reduceMotion){ ccNum.textContent = target; return; }
+  let val = 0;
+  const step = Math.max(1, Math.round(target/40));
+  ccAnim = setInterval(()=>{
+    val += step;
+    if(val >= target){ val = target; clearInterval(ccAnim); }
+    ccNum.textContent = val;
+  }, 16);
+}
+
+function select(i){
+  current = (i + SPECIES.length) % SPECIES.length;
+  const s = SPECIES[current];
+
+  // lineage tabs
+  lineage.querySelectorAll(".lin-node").forEach((n,idx)=>{
+    n.setAttribute("aria-selected", idx===current ? "true":"false");
+  });
+
+  // site cards
+  siteGrid.querySelectorAll(".site").forEach((c,idx)=>{
+    c.setAttribute("aria-current", idx===current ? "true":"false");
+  });
+
+  // map
+  updateMap(current);
+
+  // bare-skull lateral view (endocranial tint scaled to capacity)
+  svSpec.textContent = s.spec;
+  headStage.classList.remove("show");
+  headStage.innerHTML = skullSVG(s);
+  if(reduceMotion){
+    headStage.classList.add("show");
+  } else {
+    requestAnimationFrame(()=>requestAnimationFrame(()=>headStage.classList.add("show")));
+  }
+
+  // fossil photograph (Wikimedia Commons; licence verified at runtime, SVG fallback)
+  ensurePhoto(s);
+  renderVisual(s);
+
+  // Smithsonian reference link
+  siLink.href = s.si.href;
+  siLink.textContent = s.si.label;
+  siLink.title = s.si.name;
+
+  // cranial capacity chip
+  if(s.cc){
+    ccUnit.style.display = "";
+    animateCC(s.cc);
+  } else {
+    clearInterval(ccAnim);
+    ccNum.textContent = "not recorded";
+    ccUnit.style.display = "none";
+  }
+
+  svName.textContent = s.name;
+  svEpithet.textContent = s.epithet;
+  svBench.innerHTML = `Posture <span>${s.posture}</span> · Era <span>${s.mya}</span>`;
+
+  // record list
+  recordList.innerHTML = "";
+  FIELDS.forEach(([key,label])=>{
+    const row = document.createElement("div");
+    row.className = "rec-row";
+    const val = s[key];
+    const muted = (val && (val.startsWith("Not recorded") || val==="Fully modern skeleton")) ? "" : "";
+    row.innerHTML = `<dt>${label}</dt><dd class="${val.startsWith('Not recorded')?'muted':''}">${val}</dd>`;
+    recordList.appendChild(row);
+  });
+}
+
+/* ---------- NAV ---------- */
+document.getElementById("prevBtn").addEventListener("click", ()=>select(current-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>select(current+1));
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="ArrowRight") select(current+1);
+  if(e.key==="ArrowLeft") select(current-1);
+});
+
+/* ---------- WORLD MAP (Leaflet, gracefully optional) ---------- */
+let mapReady = false, lmap = null, markerGroups = {}, connectLayer = null;
+
+function initMap(){
+  const el = document.getElementById("map");
+  if (typeof L === "undefined"){
+    el.classList.add("map-fallback");
+    el.innerHTML = '<div class="map-note">The interactive world map needs to be served over the web. Open this page through a local server (e.g. <b>python3 -m http.server</b>) or your GitHub Pages URL and the fossil sites will appear — plotted, highlighted, and connected. Everything else on the page works offline.</div>';
+    return;
+  }
+  try{
+    lmap = L.map(el, { zoomControl:true, worldCopyJump:true, scrollWheelZoom:false, minZoom:1 }).setView([18,25], 2);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution:'© OpenStreetMap, © CARTO', subdomains:"abcd", maxZoom:8
+    }).addTo(lmap);
+    connectLayer = L.layerGroup().addTo(lmap);
+
+    SPECIES.forEach((s,i)=>{
+      const group = L.layerGroup().addTo(lmap);
+      s.geo.forEach(pt=>{
+        const m = L.circleMarker([pt.lat, pt.lng], {
+          radius:4, color:"#1b1510", weight:1, fillColor:s.c1, fillOpacity:.35
+        });
+        m.bindTooltip(`<b>${pt.label}</b><br>${s.name}`, { direction:"top", offset:[0,-3] });
+        m.on("click", ()=>select(i));
+        m.addTo(group);
+      });
+      markerGroups[i] = group;
+    });
+
+    mapReady = true;
+    setTimeout(()=>lmap.invalidateSize(), 260);
+    window.addEventListener("resize", ()=>{ if(lmap) lmap.invalidateSize(); });
+  }catch(err){
+    el.classList.add("map-fallback");
+    el.innerHTML = '<div class="map-note">The map could not load right now, but every other section is fully working.</div>';
+  }
+}
+
+function updateMap(idx){
+  if (!mapReady) return;
+  connectLayer.clearLayers();
+  Object.entries(markerGroups).forEach(([k,g])=>{
+    const sel = (+k === idx);
+    g.eachLayer(m=>{
+      m.setRadius(sel ? 9 : 4);
+      m.setStyle({
+        fillColor: sel ? "#69c4b1" : SPECIES[+k].c1,
+        fillOpacity: sel ? 1 : .3,
+        color: sel ? "#0c2a25" : "#1b1510",
+        weight: sel ? 2 : 1
+      });
+      if (sel){ m.bringToFront(); m.openTooltip(); } else { m.closeTooltip(); }
+    });
+  });
+  const geo = SPECIES[idx].geo;
+  if (geo.length > 1){
+    connectLayer.addLayer(L.polyline(geo.map(p=>[p.lat,p.lng]), {
+      color:"#4fa392", weight:1.6, dashArray:"5 6", opacity:.85
+    }));
+  }
+  const bounds = L.latLngBounds(geo.map(p=>[p.lat,p.lng]));
+  const opts = { padding:[60,60], maxZoom: geo.length>1 ? 5 : 4, animate: !reduceMotion };
+  if (reduceMotion) lmap.fitBounds(bounds, opts);
+  else lmap.flyToBounds(bounds, opts);
+}
+
+/* init */
+initMap();
+select(0);
+</script>
+</body>
+</html>
