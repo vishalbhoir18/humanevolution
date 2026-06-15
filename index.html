@@ -30,6 +30,7 @@
     --mono:"IBM Plex Mono",ui-monospace,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
   html{scroll-behavior:smooth}
   body{
     background:var(--soil);
@@ -192,6 +193,7 @@
   .photo-credit{font-family:var(--mono);font-size:.57rem;line-height:1.5;color:var(--bone-dim);margin-top:10px;max-width:240px;margin-left:auto;margin-right:auto;letter-spacing:.01em}
   .photo-credit a{color:var(--patina-bright);text-decoration:none}
   .photo-credit a:hover{text-decoration:underline}
+  .photo-status{font-family:var(--mono);font-size:.6rem;line-height:1.5;color:var(--bone-dim);margin-top:9px;max-width:230px;margin-left:auto;margin-right:auto;letter-spacing:.02em}
 
   .si-link{
     display:inline-block;margin-top:16px;font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;
@@ -300,6 +302,7 @@
           <div class="head-stage" id="headStage"></div>
         </div>
         <div class="photo-credit" id="photoCredit" hidden></div>
+        <div class="photo-status" id="photoStatus" hidden></div>
         <div class="head-cap" id="headCap"><b id="svSpec">—</b> · braincase tint ∝ capacity</div>
         <div class="sv-name" id="svName">—</div>
         <div class="sv-epithet" id="svEpithet">—</div>
@@ -632,6 +635,7 @@ const photoImg = document.getElementById("photoImg");
 const photoCredit = document.getElementById("photoCredit");
 const headCap = document.getElementById("headCap");
 const svLabel = document.getElementById("svLabel");
+const photoStatus = document.getElementById("photoStatus");
 
 /* ---------- FOSSIL PHOTOS via Wikimedia Commons (runtime licence check) ---------- */
 let viewMode = "photo";              // user preference; falls back to diagram when no photo
@@ -683,21 +687,32 @@ async function ensurePhoto(s){
 }
 
 function renderVisual(s){
-  const cache=photoCache[s.id]||{status:"none"};
-  const hasPhoto=cache.status==="ok";
-  const showPhoto=hasPhoto && viewMode==="photo";
+  const hasCandidates = !!(s.photos && s.photos.length);
+  const cache = photoCache[s.id] || {status: hasCandidates ? "loading" : "none"};
+  const inPhoto = viewMode==="photo" && hasCandidates;
+  const showPhoto = inPhoto && cache.status==="ok";
 
-  photoStage.hidden=!showPhoto;
-  photoCredit.hidden=!showPhoto;
-  headStage.style.display=showPhoto?"none":"flex";
-  headCap.hidden=showPhoto;
-  svLabel.textContent=showPhoto?"Fossil cast — photograph":"Bare-skull lateral view";
+  // The toggle is available whenever a stage has candidate photos,
+  // regardless of whether the image has finished loading yet.
+  viewToggle.hidden = !hasCandidates;
+  vtPhoto.classList.toggle("active", viewMode==="photo");
+  vtDiagram.classList.toggle("active", viewMode==="diagram");
 
-  viewToggle.hidden=!hasPhoto;
-  if(hasPhoto){
-    vtPhoto.classList.toggle("active", viewMode==="photo");
-    vtDiagram.classList.toggle("active", viewMode!=="photo");
+  headStage.style.display = showPhoto ? "none" : "flex";
+  photoStage.hidden = !showPhoto;
+  photoCredit.hidden = !showPhoto;
+  headCap.hidden = showPhoto;
+  svLabel.textContent = showPhoto ? "Fossil cast — photograph" : "Bare-skull lateral view";
+
+  // status note while loading / when no free photo is available
+  if(inPhoto && cache.status==="loading"){
+    photoStatus.hidden=false; photoStatus.textContent="Loading fossil photo from Wikimedia Commons…";
+  } else if(inPhoto && cache.status==="none"){
+    photoStatus.hidden=false; photoStatus.textContent="No freely-licensed photo loaded here — showing the illustration. (Needs an internet connection and a hosted page.)";
+  } else {
+    photoStatus.hidden=true;
   }
+
   if(showPhoto){
     photoImg.src=cache.data.thumb;
     photoImg.alt=s.name+" — fossil cast photograph";
@@ -875,6 +890,9 @@ function updateMap(idx){
 /* init */
 initMap();
 select(0);
+
+/* warm the photo cache for every stage so switching is instant */
+SPECIES.forEach(s => ensurePhoto(s));
 </script>
 </body>
 </html>
