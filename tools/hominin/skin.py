@@ -89,11 +89,11 @@ def compose(body, look, out_dir, size=2048, log=print):
     mouth_in = tx.load_mask(root, "inside-mouth", size)
 
     is_head = U > -17.0
-    jit = (clump - 0.5) * 1.3 + (mottle - 0.5) * 0.8          # cm, breaks up region edges
+    jit = (mottle - 0.5) * 1.7 + (crease - 0.5) * 0.9         # cm, breaks up region edges (isotropic)
 
     # ------------------------------------------------------------ hair regions
     scalp = M.scalp(X, F, U, look.get("hairline"), jit) * is_head * (1 - ears)
-    beard = M.beard(X, F, U, jit) * is_head * (1 - lips) * (1 - ears)
+    beard = M.beard(X, F, U, jit, soft=2.2) * is_head * (1 - lips) * (1 - ears)
     brows = M.brows(X, F, U, jit)
 
     face_bare = sstep(-3.2, -0.6, F + jit * 0.5) * sstep(-10.6, -8.6, U + jit * 0.4) * sstep(3.9, 2.9, U + jit * 0.3) * is_head
@@ -115,7 +115,7 @@ def compose(body, look, out_dir, size=2048, log=print):
 
     fur_a = strands(fur_cov, strand, clump)
     # scalp / beard edges are stippled with isotropic noise so they do not "drip"
-    hair_a = sstep(0.30, 0.62, hair_cov + (pores - 0.5) * 0.35 + (crease - 0.5) * 0.25) * sstep(0.0, 0.06, hair_cov)
+    hair_a = sstep(0.26, 0.66, hair_cov + (pores - 0.5) * 0.45 + (crease - 0.5) * 0.35) * sstep(0.0, 0.06, hair_cov)
     brow_a = strands(brow_cov, strand, pores)
 
     # ------------------------------------------------------------------ colour
@@ -160,8 +160,8 @@ def compose(body, look, out_dir, size=2048, log=print):
 
     # --------------------------------------------------------------- roughness
     any_hair = np.clip(fur_a + hair_a + brow_a, 0, 1)
-    rough = 0.52 + 0.10 * pores
-    rough -= 0.10 * (nose_tip + g(AX, 0, 3.5) * g(U, 4.5, 2.2) * sstep(-2, 1, F)) * is_head
+    rough = 0.63 + 0.10 * pores
+    rough -= 0.06 * (nose_tip + g(AX, 0, 3.5) * g(U, 4.5, 2.2) * sstep(-2, 1, F)) * is_head
     rough = rough * (1 - lips * 0.9) + 0.36 * lips * 0.9
     rough = rough * (1 - nails) + 0.3 * nails
     rough = rough * (1 - palm * 0.7) + 0.66 * palm * 0.7

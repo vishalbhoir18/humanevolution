@@ -9,6 +9,14 @@ Soft tissue (skin colour, hair cover, ears, lips, nose cartilage, eye colour)
 does not fossilise.  Those choices are flagged `inferred` in `evidence`.
 """
 
+APE_LIPS = {
+    "mouth/mouth-upperlip-volume-decr": 1.0,
+    "mouth/mouth-lowerlip-volume-decr": 0.95,
+    "mouth/mouth-cupidsbow-decr": 1.0,
+    "mouth/mouth-philtrum-volume-decr": 0.8,
+    "mouth/mouth-scale-horiz-incr": 1.0,
+}
+
 THIN_LIPS = {
     "mouth/mouth-upperlip-volume-decr": 0.8,
     "mouth/mouth-lowerlip-volume-decr": 0.6,
@@ -42,9 +50,9 @@ SPECIES["neander"] = dict(
         "mouth/mouth-upperlip-volume-decr": 0.3,
         "torso/torso-scale-depth-incr": 0.6,
     },
-    head=dict(vault_h=0.86, vault_w=1.05, occiput=0.5, bun=1.1, forehead=1.5,
-              brow=0.95, brow_arch=1.0, brow_sulcus=0.15, midface=1.0, muzzle=0.7,
-              chin=1.1, nose_flat=-0.15, nose_w=0.6, upper_face=0.55, jaw_drop=0.35,
+    head=dict(vault_h=0.84, vault_w=1.05, occiput=0.5, bun=1.1, forehead=1.9,
+              brow=1.15, brow_arch=1.0, brow_sulcus=0.2, midface=1.3, muzzle=0.8,
+              chin=1.4, nose_flat=-0.15, nose_w=0.8, upper_face=0.7, jaw_drop=0.35,
               gonial=0.25),
     head_length=0.218,
     limbs=dict(humerofemoral=72.0, brachial=73.0, crural=78.5),
@@ -99,7 +107,7 @@ SPECIES["habilis"] = dict(
 SPECIES["austra"] = dict(
     id="austra",
     macro=dict(gender=0.5, age=0.46, muscle=0.72, weight=0.46, african=1.0, asian=0.0, caucasian=0.0),
-    targets={**THIN_LIPS, "mouth/mouth-scale-horiz-incr": 0.9},
+    targets={**APE_LIPS, "mouth/mouth-scale-horiz-incr": 0.9},
     head=dict(vault_h=0.62, vault_w=0.78, vault_w_top=0.72, occiput=-1.5, forehead=2.4,
               brow=0.75, brow_arch=0.3, brow_sulcus=0.2, muzzle=3.6, muzzle_w=4.6, chin=2.2,
               nose_flat=1.5, nose_bridge=0.9, nose_w=0.9, upper_face=0.4, jaw_drop=0.8,
@@ -122,7 +130,7 @@ SPECIES["austra"] = dict(
 SPECIES["dryo"] = dict(
     id="dryo",
     macro=dict(gender=0.9, age=0.5, muscle=0.9, weight=0.62, african=1.0, asian=0.0, caucasian=0.0),
-    targets={**THIN_LIPS, "mouth/mouth-scale-horiz-incr": 1.0},
+    targets={**APE_LIPS},
     head=dict(vault_h=0.52, vault_w=0.70, vault_w_top=0.62, occiput=-2.2, forehead=2.6,
               brow=0.9, brow_arch=0.5, brow_sulcus=0.3, muzzle=5.2, muzzle_w=4.9, chin=3.0,
               nose_flat=1.9, nose_bridge=1.3, nose_w=1.1, upper_face=0.6, jaw_drop=1.2,
@@ -137,7 +145,7 @@ SPECIES["dryo"] = dict(
     },
     finger_scale=1.25, thumb_scale=0.8, hallux_abduct=32.0,
     stature=1.10,
-    hair_volume=dict(scalp=0.6, beard=0.3, hairline=dict(front=(1.6, 3.9), temple=0.3)),
+    hair_volume=dict(scalp=0.6, beard=0.0, hairline=dict(front=(1.6, 3.9), temple=0.3)),
     stance=dict(kind="quadruped", hip_height=0.70),
 )
 
@@ -148,7 +156,7 @@ SPECIES["dryo"] = dict(
 SPECIES["rama"] = dict(
     id="rama",
     macro=dict(gender=0.85, age=0.5, muscle=0.85, weight=0.64, african=1.0, asian=0.0, caucasian=0.0),
-    targets={**THIN_LIPS, "mouth/mouth-scale-horiz-incr": 1.0},
+    targets={**APE_LIPS},
     head=dict(vault_h=0.56, vault_w=0.72, vault_w_top=0.64, occiput=-2.0, forehead=2.2,
               brow=0.35, brow_arch=1.0, muzzle=4.6, muzzle_w=4.6, chin=2.8,
               nose_flat=1.9, nose_bridge=1.7, nose_w=0.9, upper_face=0.9, jaw_drop=1.3,
@@ -162,7 +170,7 @@ SPECIES["rama"] = dict(
     },
     finger_scale=1.25, thumb_scale=0.85, hallux_abduct=30.0,
     stature=1.15,
-    hair_volume=dict(scalp=0.6, beard=0.5, hairline=dict(front=(1.6, 3.9), temple=0.3)),
+    hair_volume=dict(scalp=0.6, beard=0.0, hairline=dict(front=(1.6, 3.9), temple=0.3)),
     stance=dict(kind="quadruped", hip_height=0.76),
 )
 

@@ -388,6 +388,12 @@
     .lineup{--ppm:70px}
     .lineup button{flex-basis:88px}
   }
+  @media (max-width:560px){
+    model-viewer,.mv-poster{bottom:110px}
+    .hs-note{bottom:112px}
+    .life-controls{gap:6px}
+    .seg button,.tool{padding:9px 10px}
+  }
 
   @media (max-width:840px){
     .explorer{grid-template-columns:1fr;gap:26px}
@@ -433,7 +439,7 @@
           ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor"
           autoplay animation-name="Idle" animation-crossfade-duration="350"
           shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05" environment-image="neutral"
-          interaction-prompt="auto" interpolation-decay="90" min-field-of-view="12deg" max-field-of-view="38deg"
+          interaction-prompt="auto" interpolation-decay="90" min-camera-orbit="auto auto 0.12m" min-field-of-view="12deg" max-field-of-view="38deg"
           alt="3D life reconstruction">
           <button slot="ar-button" class="ar-btn" type="button">View life-size in your space</button>
           <div slot="poster"></div>
@@ -482,6 +488,7 @@
       <div class="lineup-cap">All seven to the same scale · lines every 0.5 m</div>
       <div class="lineup" id="lineup"></div>
     </div>
+    <p class="ar-hint">These figures are stylised reconstructions generated from fossil measurements. They are not photographs and not scans of the fossils; for the bones themselves, follow the Smithsonian links in the specimen record below.</p>
   </section>
 
   <!-- ============ EXPLORER ============ -->
@@ -1021,6 +1028,8 @@ function select(i){
 document.getElementById("prevBtn").addEventListener("click", ()=>select(current-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>select(current+1));
 document.addEventListener("keydown",(e)=>{
+  // inside the 3D viewer the arrow keys turn the model instead
+  if(e.target && e.target.closest && e.target.closest("model-viewer")) return;
   if(e.key==="ArrowRight") select(current+1);
   if(e.key==="ArrowLeft") select(current-1);
 });

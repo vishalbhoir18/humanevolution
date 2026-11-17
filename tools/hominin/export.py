@@ -43,3 +43,52 @@ def export_glb(path, objects, jpeg_quality=88):
         export_morph=False, export_cameras=False, export_lights=False, export_extras=False,
     )
     return path
+
+
+def fix_quaternion_continuity(path):
+    """Make consecutive rotation keys in a .glb take the short way round.
+
+    q and -q are the same rotation, and the exporter may alternate between
+    them from one sampled frame to the next.  Viewers that interpolate the
+    raw components would then spin the joint through 360 degrees between two
+    frames.  This flips signs in place so neighbouring keys always agree.
+    """
+    import json
+    import struct
+
+    import numpy as np
+    with open(path, "rb") as f:
+        blob = bytearray(f.read())
+    jlen = struct.unpack_from("<I", blob, 12)[0]
+    doc = json.loads(bytes(blob[20:20 + jlen]))
+    base = 20 + jlen + 8
+    done, flips = set(), 0
+    for a in doc.get("animations", []):
+        for ch in a["channels"]:
+            if ch["target"]["path"] != "rotation":
+                continue
+            ai = a["samplers"][ch["sampler"]]["output"]
+            if ai in done:
+                continue
+            done.add(ai)
+            acc = doc["accessors"][ai]
+            if acc["componentType"] != 5126 or acc["type"] != "VEC4":
+                continue
+            bv = doc["bufferViews"][acc["bufferView"]]
+            off = base + bv.get("byteOffset", 0) + acc.get("byteOffset", 0)
+            q = np.frombuffer(bytes(blob[off:off + acc["count"] * 16]), dtype="<f4").reshape(-1, 4).copy()
+            for i in range(1, len(q)):
+                if float(np.dot(q[i], q[i - 1])) < 0:
+                    q[i] = -q[i]
+                    flips += 1
+            blob[off:off + acc["count"] * 16] = q.astype("<f4").tobytes()
+            if "min" in acc:
+                acc["min"], acc["max"] = [float(v) for v in q.min(0)], [float(v) for v in q.max(0)]
+    new_json = json.dumps(doc, separators=(",", ":")).encode()
+    new_json += b" " * ((4 - len(new_json) % 4) % 4)
+    out = bytearray(blob[:12])
+    out += struct.pack("<I", len(new_json)) + b"JSON" + new_json + bytes(blob[20 + jlen:])
+    struct.pack_into("<I", out, 8, len(out))
+    with open(path, "wb") as f:
+        f.write(out)
+    return flips

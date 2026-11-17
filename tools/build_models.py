@@ -99,7 +99,8 @@ def poster(b, objs, path, res=(600, 800)):
     lo, hi = b.V.min(0), b.V.max(0)
     c = (lo + hi) / 2
     ext = poster_extent(b)
-    sc.studio_lights(c, max(ext, 0.8) * 0.62)
+    sc.studio_lights(c, max(ext, 0.8) * 0.78)
+    bpy.context.scene.world.node_tree.nodes["Background"].inputs[1].default_value = 1.4
     tmp = path + ".png"
     scene.render.image_settings.color_mode = "RGBA"
     sc.render_view(tmp, c, ext, 32, elevation_deg=6, res=res)
@@ -135,6 +136,7 @@ def build_one(data, sid, size=2048, log=print):
     glb = os.path.join(OUT, f"{sid}.glb")
     objs = [arm, b.obj, *extras]
     export.export_glb(glb, objs)
+    export.fix_quaternion_continuity(glb)
     export.preview(arm, "Idle")           # the poster shows the first frame the viewer will show
     bpy.context.scene.frame_set(0)
     poster(b, objs, os.path.join(OUT, "posters", f"{sid}.webp"))

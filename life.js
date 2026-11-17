@@ -216,7 +216,7 @@ const RECON = {
       "A projecting bony chin, found in no other human",
       "A light, long-legged skeleton"
     ],
-    assumed: "Hair form and beard. Dark skin follows ancient DNA: early modern humans, including Europeans as recently as about 10,000 years ago, carried the gene variants for dark pigmentation.",
+    assumed: "Hair form and beard. Dark skin follows ancient DNA: early modern humans, including a European hunter-gatherer who lived only about 7,000 years ago, carried the ancestral gene variants for dark pigmentation.",
     beyond: "The syllabus places the origin in the Ice Age, 75,000–10,000 years ago. The oldest Homo sapiens fossils are about 300,000 years old. Biologists now describe human diversity as gradual geographic variation rather than distinct races.",
     notes: {
       braincase: ["Braincase", "High and globe-shaped. About 1,350 cc on average today (1,450 cc in the syllabus table; Cro-Magnon 1 held about 1,600 cc)."],
@@ -321,7 +321,8 @@ function applyAnim(){
     if (name === "Rest" || (reduce && name !== "Walk")){ mv.pause(); try{ mv.currentTime = 0; }catch(e){} }
     else mv.play({ repetitions: Infinity });
   }
-  document.querySelectorAll("[data-anim]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.anim === state.anim)));
+  // while the anatomy notes are open the figure holds still, so neither movement button is "on"
+  document.querySelectorAll("[data-anim]").forEach(b => b.setAttribute("aria-pressed", String(!state.anatomy && b.dataset.anim === state.anim)));
 }
 function applyView(animate){
   const m = MODELS[state.id];
@@ -331,8 +332,10 @@ function applyView(animate){
     const L = m.head_length_cm / 100;
     const t = [0, (ch[1] + c[1]) / 2, (a[2] + c[2]) / 2 - L * 0.2];
     mv.setAttribute("camera-target", t.map(v => v.toFixed(3) + "m").join(" "));
-    mv.setAttribute("camera-orbit", `-32deg 82deg ${(L * 4.2).toFixed(2)}m`);
+    mv.setAttribute("field-of-view", "26deg");
+    mv.setAttribute("camera-orbit", `-32deg 82deg ${(L * 4.4).toFixed(2)}m`);
   } else {
+    mv.setAttribute("field-of-view", "auto");
     mv.setAttribute("camera-target", "auto auto auto");
     mv.setAttribute("camera-orbit", (m.stance === "quadruped" ? "-52deg 76deg" : "-28deg 82deg") + " 108%");
   }
@@ -375,7 +378,9 @@ mv.addEventListener("load", () => {
   stage.classList.add("loaded");
   applyAnim(); applyView(false); applySpin();
   const ok = !!mv.canActivateAR;
-  $("arHint").hidden = ok;
+  $("arHint").textContent = ok
+    ? "Tap “View life-size in your space”, then point the camera at the floor. On iPhone and iPad the AR figure stands still; on Android it moves."
+    : "Life-size AR needs a phone or tablet: open this page in Chrome on Android or Safari on iPhone and iPad, then tap “View life-size in your space”.";
 });
 mv.addEventListener("error", () => { stage.classList.add("failed"); });
 mv.addEventListener("progress", e => {

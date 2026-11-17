@@ -5,7 +5,7 @@
    "id": "dryo",
    "file": "models/dryo.glb",
    "poster": "models/posters/dryo.webp",
-   "bytes": 3125920,
+   "bytes": 3106988,
    "vertices": 21578,
    "animations": [
     "Idle",
@@ -13,9 +13,10 @@
     "Rest"
    ],
    "stance": "quadruped",
-   "height_m": 0.633,
-   "length_m": 0.591,
+   "height_m": 0.632,
+   "length_m": 0.589,
    "upright_stature_m": 1.1,
+   "poster_extent_m": 0.716,
    "trunk_pitch_deg": 79.5,
    "head_length_cm": 12.8,
    "head_breadth_cm": 7.1,
@@ -27,9 +28,9 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0114,
-      0.6349,
-      0.4143
+      0.0113,
+      0.6346,
+      0.4142
      ],
      "normal": [
       0.4472,
@@ -51,9 +52,9 @@
     },
     "face": {
      "position": [
-      0.003,
-      0.506,
-      0.4998
+      0.0024,
+      0.5065,
+      0.4976
      ],
      "normal": [
       0.2873,
@@ -64,8 +65,8 @@
     "chin": {
      "position": [
       0.0,
-      0.4699,
-      0.4639
+      0.4727,
+      0.4611
      ],
      "normal": [
       0.0,
@@ -164,7 +165,7 @@
    "id": "rama",
    "file": "models/rama.glb",
    "poster": "models/posters/rama.webp",
-   "bytes": 3241760,
+   "bytes": 3156820,
    "vertices": 21479,
    "animations": [
     "Idle",
@@ -172,9 +173,10 @@
     "Rest"
    ],
    "stance": "quadruped",
-   "height_m": 0.607,
-   "length_m": 0.639,
+   "height_m": 0.606,
+   "length_m": 0.635,
    "upright_stature_m": 1.15,
+   "poster_extent_m": 0.749,
    "trunk_pitch_deg": 90.5,
    "head_length_cm": 13.8,
    "head_breadth_cm": 7.9,
@@ -186,9 +188,9 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.012,
-      0.6081,
-      0.4558
+      0.0118,
+      0.6079,
+      0.4557
      ],
      "normal": [
       0.4472,
@@ -210,9 +212,9 @@
     },
     "face": {
      "position": [
-      0.0037,
-      0.4636,
-      0.5435
+      0.0025,
+      0.4645,
+      0.5396
      ],
      "normal": [
       0.2873,
@@ -223,8 +225,8 @@
     "chin": {
      "position": [
       -0.0,
-      0.4244,
-      0.5038
+      0.427,
+      0.5013
      ],
      "normal": [
       0.0,
@@ -323,8 +325,8 @@
    "id": "austra",
    "file": "models/austra.glb",
    "poster": "models/posters/austra.webp",
-   "bytes": 3139100,
-   "vertices": 20706,
+   "bytes": 3113152,
+   "vertices": 20682,
    "animations": [
     "Idle",
     "Walk",
@@ -334,6 +336,7 @@
    "height_m": 1.07,
    "length_m": 0.224,
    "upright_stature_m": 1.07,
+   "poster_extent_m": 1.198,
    "trunk_pitch_deg": 0.0,
    "head_length_cm": 16.2,
    "head_breadth_cm": 9.7,
@@ -345,8 +348,8 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0125,
-      1.0754,
+      0.0123,
+      1.0751,
       0.0353
      ],
      "normal": [
@@ -371,7 +374,7 @@
      "position": [
       0.0035,
       0.9344,
-      0.1515
+      0.1513
      ],
      "normal": [
       0.2873,
@@ -393,8 +396,8 @@
     },
     "shoulder": {
      "position": [
-      0.1459,
-      0.8589,
+      0.1451,
+      0.8585,
       0.0005
      ],
      "normal": [
@@ -482,7 +485,7 @@
    "id": "habilis",
    "file": "models/habilis.glb",
    "poster": "models/posters/habilis.webp",
-   "bytes": 3374096,
+   "bytes": 3348220,
    "vertices": 21378,
    "animations": [
     "Idle",
@@ -493,6 +496,7 @@
    "height_m": 1.3,
    "length_m": 0.252,
    "upright_stature_m": 1.3,
+   "poster_extent_m": 1.456,
    "trunk_pitch_deg": 0.0,
    "head_length_cm": 16.5,
    "head_breadth_cm": 10.2,
@@ -504,9 +508,9 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0141,
-      1.305,
-      0.0443
+      0.0139,
+      1.3047,
+      0.0442
      ],
      "normal": [
       0.4472,
@@ -552,8 +556,8 @@
     },
     "shoulder": {
      "position": [
-      0.1877,
-      1.0466,
+      0.1875,
+      1.0465,
       0.0035
      ],
      "normal": [
@@ -641,7 +645,7 @@
    "id": "erectus",
    "file": "models/erectus.glb",
    "poster": "models/posters/erectus.webp",
-   "bytes": 3007672,
+   "bytes": 2994884,
    "vertices": 20893,
    "animations": [
     "Idle",
@@ -649,9 +653,10 @@
     "Rest"
    ],
    "stance": "biped",
-   "height_m": 1.63,
+   "height_m": 1.629,
    "length_m": 0.286,
    "upright_stature_m": 1.63,
+   "poster_extent_m": 1.825,
    "trunk_pitch_deg": 0.0,
    "head_length_cm": 20.6,
    "head_breadth_cm": 13.1,
@@ -663,8 +668,8 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0164,
-      1.6341,
+      0.0161,
+      1.6337,
       0.0423
      ],
      "normal": [
@@ -800,7 +805,7 @@
    "id": "neander",
    "file": "models/neander.glb",
    "poster": "models/posters/neander.webp",
-   "bytes": 3234808,
+   "bytes": 3173740,
    "vertices": 20954,
    "animations": [
     "Idle",
@@ -809,8 +814,9 @@
    ],
    "stance": "biped",
    "height_m": 1.66,
-   "length_m": 0.33,
+   "length_m": 0.331,
    "upright_stature_m": 1.66,
+   "poster_extent_m": 1.859,
    "trunk_pitch_deg": 0.0,
    "head_length_cm": 21.8,
    "head_breadth_cm": 15.7,
@@ -822,9 +828,9 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0214,
-      1.6682,
-      0.0605
+      0.0212,
+      1.6678,
+      0.0589
      ],
      "normal": [
       0.4472,
@@ -834,9 +840,9 @@
     },
     "brow": {
      "position": [
-      0.0052,
-      1.5732,
-      0.1699
+      0.0055,
+      1.5753,
+      0.1714
      ],
      "normal": [
       0.3246,
@@ -847,8 +853,8 @@
     "face": {
      "position": [
       0.0037,
-      1.4792,
-      0.1894
+      1.4802,
+      0.1933
      ],
      "normal": [
       0.2873,
@@ -859,8 +865,8 @@
     "chin": {
      "position": [
       -0.0,
-      1.4279,
-      0.155
+      1.4286,
+      0.1535
      ],
      "normal": [
       0.0,
@@ -871,8 +877,8 @@
     "shoulder": {
      "position": [
       0.2518,
-      1.3365,
-      0.0175
+      1.3385,
+      0.0176
      ],
      "normal": [
       0.8944,
@@ -882,9 +888,9 @@
     },
     "chest": {
      "position": [
-      0.0758,
-      1.2198,
-      0.1817
+      0.0759,
+      1.2218,
+      0.182
      ],
      "normal": [
       0.2873,
@@ -894,8 +900,8 @@
     },
     "arm": {
      "position": [
-      0.2983,
-      1.0677,
+      0.2988,
+      1.0694,
       0.0227
      ],
      "normal": [
@@ -906,9 +912,9 @@
     },
     "hand": {
      "position": [
-      0.3142,
-      0.7425,
-      0.0932
+      0.3147,
+      0.7437,
+      0.0933
      ],
      "normal": [
       0.8575,
@@ -918,8 +924,8 @@
     },
     "pelvis": {
      "position": [
-      0.3191,
-      0.867,
+      0.3196,
+      0.8684,
       0.0209
      ],
      "normal": [
@@ -930,9 +936,9 @@
     },
     "knee": {
      "position": [
-      0.1336,
-      0.4651,
-      0.0708
+      0.1338,
+      0.4659,
+      0.0709
      ],
      "normal": [
       0.3714,
@@ -942,9 +948,9 @@
     },
     "foot": {
      "position": [
-      0.1267,
-      0.0453,
-      0.1226
+      0.1269,
+      0.0454,
+      0.1228
      ],
      "normal": [
       0.4472,
@@ -959,7 +965,7 @@
    "id": "sapiens",
    "file": "models/sapiens.glb",
    "poster": "models/posters/sapiens.webp",
-   "bytes": 2966328,
+   "bytes": 2959280,
    "vertices": 21130,
    "animations": [
     "Idle",
@@ -967,9 +973,10 @@
     "Rest"
    ],
    "stance": "biped",
-   "height_m": 1.72,
+   "height_m": 1.719,
    "length_m": 0.298,
    "upright_stature_m": 1.72,
+   "poster_extent_m": 1.925,
    "trunk_pitch_deg": 0.0,
    "head_length_cm": 20.2,
    "head_breadth_cm": 14.8,
@@ -981,8 +988,8 @@
    "hotspots": {
     "braincase": {
      "position": [
-      0.0202,
-      1.7259,
+      0.02,
+      1.7254,
       0.0503
      ],
      "normal": [
@@ -1112,7 +1119,7 @@
      ]
     }
    },
-   "inferred": "Dark skin: genomes of early modern humans, including Europeans as late as ~10 ka, carry the ancestral alleles for dark pigmentation. Hair form and beard are inferred."
+   "inferred": "Dark skin: genomes of early modern humans, including a ~7,000-year-old European hunter-gatherer (La Brana), carry the ancestral alleles for dark pigmentation. Hair form and beard are inferred."
   }
  ]
 }

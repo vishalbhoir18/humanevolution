@@ -139,6 +139,9 @@ class Body:
                 W[v.index, gi[ge.group]] = ge.weight
         W /= W.sum(1, keepdims=True)
         self.obj, self.Vm, self.W = obj, V.reshape(n, 3), W
+        ed = np.empty(len(me.edges) * 2, dtype=np.int32)
+        me.edges.foreach_get("vertices", ed)
+        self.edges = ed.reshape(-1, 2)
         self.log(f"  mesh: {len(ids)} -> {n} verts after head subdivision")
 
     # ---------------------------------------------------------- 3. head sculpt
@@ -292,7 +295,34 @@ class Body:
                 break
             m = self.measure()
             hs *= target / m["head_length"]
+        self.relax()
         return self
+
+    def relax(self):
+        """Smooth away pinches that linear-blend skinning leaves when a stance
+        is baked in (the nape of the four-legged apes above all), and the
+        faint terracing that subdivision leaves on the vault."""
+        from scipy.sparse import coo_matrix
+        from . import masks as M
+        from .sculpt import above_base
+        n = len(self.V)
+        e = self.edges
+        A = coo_matrix((np.ones(len(e) * 2), (np.r_[e[:, 0], e[:, 1]], np.r_[e[:, 1], e[:, 0]])), shape=(n, n)).tocsr()
+        deg = np.asarray(A.sum(1)).ravel()
+        deg[deg == 0] = 1
+        C = self._can(self.Vm)
+        X, F, U = C[:, 0], C[:, 1], C[:, 2]
+        ear = M.ear_zone(X, F, U)
+        quad = self.spec.get("stance", {}).get("kind") == "quadruped"
+        nape = sstep(-6.0, -9.5, F) * sstep(4.0, 1.0, U) * sstep(-21.0, -15.0, U) * (1 - ear)
+        vault = sstep(0.5, 2.5, above_base(F, U)) * (1 - ear) * np.maximum(sstep(3.4, 4.8, U), sstep(-2.0, -5.0, F)) * (U > -17.0)
+        for mask, iters in ((nape, 40 if quad else 8), (vault, 5)):
+            m = (mask * 0.6)[:, None]
+            if not m.any():
+                continue
+            for _ in range(iters):
+                avg = (A @ self.V) / deg[:, None]
+                self.V = self.V + m * (avg - self.V)
 
     def measure(self):
         s = self.skel

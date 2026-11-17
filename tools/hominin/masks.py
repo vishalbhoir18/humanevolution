@@ -26,7 +26,10 @@ def beard(X, F, U, jit=0.0, soft=1.0):
     top = -6.3 + 3.9 * sstep(-2.5, -8.6, F)             # cheek line: mouth corner -> sideburn
     under = sstep(-14.6, -12.6, U + jit * 0.25)          # stops a little below the jaw line
     jaw = sstep(0.0, 1.2 * soft, top - U + jit * 0.5) * under * sstep(-10.5, -8.6, F)
-    tache = sstep(-6.75, -6.35, U) * sstep(-5.0, -5.5, U + jit * 0.1) * sstep(3.6, 2.6, AX) * sstep(1.0, 2.0, F)
+    # moustache, running down past the mouth corners to join the beard
+    tache = sstep(-6.75, -6.35, U) * sstep(-5.0, -5.5, U + jit * 0.1) * sstep(3.9, 2.9, AX) * sstep(1.0, 2.0, F)
+    corner = sstep(-9.5, -8.0, U) * sstep(-5.4, -6.2, U) * sstep(2.2, 3.0, AX) * sstep(4.6, 3.8, AX) * sstep(0.0, 1.5, F)
+    tache = np.clip(tache + corner, 0, 1)
     return np.clip(jaw + tache, 0, 1) * (U > -17.0)
 
 
