@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script type="module" src="vendor/model-viewer.min.js"></script>
 <style>
   :root{
     /* stratigraphic earth palette, oldest (deep) -> newest (surface) */
@@ -252,6 +253,148 @@
   footer .license-line a{color:var(--patina-bright);text-decoration:none}
   footer .license-line a:hover{text-decoration:underline}
 
+
+  /* ---------- LIFE RECONSTRUCTION · 3D + AR ---------- */
+  .life{display:grid;grid-template-columns:1.3fr 1fr;gap:34px;align-items:start}
+  .life-stage{
+    position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 18%, rgba(168,118,62,.20), rgba(27,21,16,.0) 62%),
+               linear-gradient(180deg, #2a2119 0%, #17120e 100%);
+    height:clamp(430px,68vh,640px);
+  }
+  .life-stage::after{   /* ground line */
+    content:"";position:absolute;left:0;right:0;bottom:0;height:22%;pointer-events:none;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,.35));
+  }
+  model-viewer{
+    position:absolute;left:0;right:0;top:40px;bottom:62px;width:auto;height:auto;display:block;background:transparent;
+    --poster-color:transparent;--progress-bar-color:transparent;--progress-mask:transparent;
+  }
+  .mv-poster{position:absolute;left:0;right:0;top:40px;bottom:62px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .mv-poster img{height:92%;width:auto;max-width:96%;object-fit:contain}
+  .life-stage.loaded .mv-poster{display:none}
+  .mv-prog{position:absolute;left:0;right:0;top:0;height:3px;background:rgba(0,0,0,.3);z-index:3}
+  .mv-prog i{display:block;height:100%;width:0;background:var(--patina-bright);transition:width .2s}
+  .life-hud{
+    position:absolute;left:14px;top:14px;right:14px;z-index:3;pointer-events:none;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;
+  }
+  .chip{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--bone-dim);border:1px solid var(--line);border-radius:3px;padding:6px 10px;
+    background:rgba(20,15,11,.72);backdrop-filter:blur(4px);
+  }
+  .chip b{color:var(--pale);font-weight:500}
+  .life-controls{
+    position:absolute;left:12px;right:12px;bottom:12px;z-index:4;
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  }
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:rgba(20,15,11,.78);backdrop-filter:blur(4px)}
+  .seg button,.tool{
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;
+    padding:9px 12px;min-height:38px;background:transparent;color:var(--bone-dim);border:none;cursor:pointer;transition:.2s;
+  }
+  .seg button+button{border-left:1px solid var(--line)}
+  .seg button[aria-pressed="true"],.tool[aria-pressed="true"]{background:var(--patina);color:var(--soil)}
+  .seg button:hover:not([aria-pressed="true"]),.tool:hover:not([aria-pressed="true"]){color:var(--bone)}
+  .tool{border:1px solid var(--line);border-radius:4px;background:rgba(20,15,11,.78);backdrop-filter:blur(4px)}
+  .seg button:focus-visible,.tool:focus-visible,.ar-btn:focus-visible,.hs:focus-visible{outline:2px solid var(--patina-bright);outline-offset:2px}
+  .ar-btn{
+    position:absolute;right:12px;top:52px;z-index:5;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+    padding:11px 14px;border-radius:4px;border:1px solid var(--patina-bright);cursor:pointer;
+    background:var(--patina-bright);color:var(--soil);
+  }
+  .ar-hint{font-family:var(--mono);font-size:.64rem;line-height:1.6;color:var(--bone-dim);margin-top:10px;letter-spacing:.02em}
+  .life-fail{
+    display:none;position:absolute;left:14px;right:14px;bottom:64px;z-index:4;
+    font-family:var(--mono);font-size:.68rem;line-height:1.6;color:var(--bone-dim);
+    background:rgba(20,15,11,.85);border:1px solid var(--line);border-radius:4px;padding:10px 12px;
+  }
+  .life-stage.failed .life-fail,.life-stage.nomodel .life-fail{display:block}
+  .life-stage.failed .life-controls,.life-stage.nomodel .life-controls{display:none}
+
+  /* anatomy hotspots */
+  .hs{
+    display:none;width:26px;height:26px;border-radius:50%;cursor:pointer;
+    border:1.5px solid var(--patina-bright);background:rgba(20,15,11,.82);color:var(--patina-bright);
+    font-family:var(--mono);font-size:.66rem;font-weight:600;line-height:1;padding:0;
+    transition:opacity .25s, transform .2s, background .2s;
+  }
+  .life-stage.anatomy .hs{display:block}
+  .hs:not([data-visible]){opacity:.18;pointer-events:none}
+  .hs.on{background:var(--patina-bright);color:var(--soil);transform:scale(1.15)}
+  .hs-note{
+    position:absolute;left:12px;right:12px;bottom:62px;z-index:5;max-width:460px;
+    background:rgba(20,15,11,.93);border:1px solid var(--patina);border-radius:4px;padding:13px 40px 14px 15px;
+  }
+  .hs-note h4{font-family:var(--display);font-weight:600;font-size:1.02rem;color:var(--patina-bright);margin-bottom:4px}
+  .hs-note p{font-size:.9rem;color:var(--bone);line-height:1.5}
+  .hs-note .x{position:absolute;right:6px;top:6px;width:30px;height:30px;border:none;background:none;color:var(--bone-dim);font-size:1.1rem;cursor:pointer}
+  .hs-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .ev .hs-list li{padding:0}
+  .ev .hs-list li::before{display:none}
+  .hs-list button{
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.03em;color:var(--bone-dim);cursor:pointer;
+    border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.2);padding:6px 9px 6px 6px;display:flex;gap:7px;align-items:center;
+  }
+  .hs-list button i{font-style:normal;display:inline-flex;width:18px;height:18px;border-radius:50%;align-items:center;justify-content:center;border:1px solid var(--patina);color:var(--patina-bright);font-size:.6rem}
+  .hs-list button.on{border-color:var(--patina-bright);color:var(--bone)}
+
+  /* evidence panel */
+  .life-evidence h3{font-family:var(--display);font-weight:600;font-size:1.7rem;color:var(--bone);line-height:1.1}
+  .life-evidence .sci{font-family:var(--display);font-style:italic;color:var(--sand);font-size:1.02rem;margin-top:3px}
+  .life-evidence .when{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--patina-bright);margin-top:9px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin:18px 0 6px}
+  .facts div{background:var(--soil-2);padding:10px 12px}
+  .facts dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ochre)}
+  .facts dd{font-size:.86rem;color:var(--bone);margin-top:3px;line-height:1.35}
+  .ev{border-top:1px solid var(--line);padding:15px 0 2px;margin-top:14px}
+  .ev h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+  .ev h4::before{content:"";width:9px;height:9px;border-radius:50%;flex:none}
+  .ev.bone h4{color:var(--pale)} .ev.bone h4::before{background:var(--pale)}
+  .ev.guess h4{color:var(--ochre)} .ev.guess h4::before{background:none;border:1.5px dashed var(--ochre)}
+  .ev.beyond h4{color:var(--patina-bright)} .ev.beyond h4::before{background:var(--patina-bright)}
+  .ev ul{list-style:none}
+  .ev li{font-size:.92rem;color:var(--bone);padding:3px 0 3px 15px;position:relative;line-height:1.45}
+  .ev li::before{content:"";position:absolute;left:0;top:.75em;width:6px;height:1px;background:var(--bone-dim)}
+  .ev p{font-size:.92rem;color:var(--bone-dim);line-height:1.55}
+  .fossils li{padding-left:0;display:grid;grid-template-columns:1fr;gap:1px;margin-bottom:8px}
+  .fossils li::before{display:none}
+  .fossils b{font-weight:500;color:var(--bone)}
+  .fossils span{font-family:var(--mono);font-size:.66rem;color:var(--bone-dim);letter-spacing:.02em}
+  .fossils em{font-style:normal;font-size:.82rem;color:var(--sand)}
+  details.refs{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+  details.refs summary{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);cursor:pointer}
+  details.refs li{font-size:.8rem;color:var(--bone-dim);line-height:1.5;padding:4px 0 0 0;list-style:none}
+
+  /* to-scale line-up */
+  .lineup-wrap{margin-top:30px;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.18);padding:16px 14px 10px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--umber) transparent}
+  .lineup-cap{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-dim);margin-bottom:6px}
+  .lineup{--ppm:104px;display:flex;align-items:flex-end;gap:6px;min-width:max-content;border-bottom:1px solid var(--line);
+    background:repeating-linear-gradient(0deg, transparent 0 calc(var(--ppm)*.5 - 1px), rgba(212,180,131,.10) calc(var(--ppm)*.5 - 1px) calc(var(--ppm)*.5));
+    background-position:bottom;height:calc(var(--ppm)*2.05 + 46px);padding-bottom:0}
+  .lineup button{flex:1 0 108px;background:none;border:none;cursor:pointer;color:var(--bone-dim);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 2px;border-bottom:3px solid transparent;transition:.2s}
+  .lineup img{height:calc(var(--h) * var(--ppm));width:auto;display:block;margin-bottom:calc(var(--h) * var(--ppm) * -0.045)}
+  .lineup span{font-family:var(--display);font-size:.84rem;color:var(--pale);margin-top:8px;line-height:1.1}
+  .lineup small{font-family:var(--mono);font-size:.6rem;color:var(--bone-dim);margin:2px 0 6px}
+  .lineup button[aria-pressed="true"]{border-bottom-color:var(--patina-bright)}
+  .lineup button[aria-pressed="true"] span{color:var(--patina-bright)}
+  .lineup button:hover img{filter:brightness(1.15)}
+
+  @media (max-width:840px){
+    .life{grid-template-columns:1fr;gap:24px}
+    .life-stage{height:clamp(420px,72vh,560px)}
+    .lineup{--ppm:70px}
+    .lineup button{flex-basis:88px}
+  }
+  @media (max-width:560px){
+    model-viewer,.mv-poster{bottom:110px}
+    .hs-note{bottom:112px}
+    .life-controls{gap:6px}
+    .seg button,.tool{padding:9px 10px}
+  }
+
   @media (max-width:840px){
     .explorer{grid-template-columns:1fr;gap:26px}
     .specimen-visual{position:static}
@@ -282,10 +425,76 @@
     <div class="lineage" id="lineage" role="tablist" aria-label="Human evolution lineage"></div>
   </header>
 
+  <!-- ============ LIFE RECONSTRUCTION · 3D + AR ============ -->
+  <section id="life">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Meet them in 3D</h2>
+    </div>
+    <p class="lede" style="margin-bottom:26px">Each stage rebuilt as a body, sized and proportioned from its fossils. Drag to turn it, watch it walk, or place it <b>life-size in your room</b>. The panel beside it separates what the bones show from what is informed guesswork.</p>
+
+    <div class="life">
+      <div class="life-stage" id="lifeStage">
+        <model-viewer id="mv" camera-controls touch-action="pan-y" loading="lazy" reveal="auto"
+          ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor"
+          autoplay animation-name="Idle" animation-crossfade-duration="350"
+          shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05" environment-image="neutral"
+          interaction-prompt="auto" interpolation-decay="90" min-camera-orbit="auto auto 0.12m" min-field-of-view="12deg" max-field-of-view="38deg"
+          alt="3D life reconstruction">
+          <button slot="ar-button" class="ar-btn" type="button">View life-size in your space</button>
+          <div slot="poster"></div>
+          <div slot="progress-bar"></div>
+        </model-viewer>
+        <div class="mv-poster"><img id="mvPoster" alt=""></div>
+        <div class="mv-prog" id="mvProg" hidden><i id="mvBar"></i></div>
+        <div class="life-hud"><span class="chip" id="scaleChip">—</span></div>
+        <div class="hs-note" id="hsNote" hidden>
+          <button class="x" id="hsClose" type="button" aria-label="Close note">×</button>
+          <h4 id="hsTitle"></h4><p id="hsText"></p>
+        </div>
+        <div class="life-fail">The 3D model could not load here. Open the page from its web address (not as a local file) on a current browser. Everything else on the page still works.</div>
+        <div class="life-controls">
+          <div class="seg" role="group" aria-label="Movement">
+            <button type="button" data-anim="Idle" aria-pressed="true">Stand</button>
+            <button type="button" data-anim="Walk" aria-pressed="false">Walk</button>
+          </div>
+          <div class="seg" role="group" aria-label="Framing">
+            <button type="button" data-view="body" aria-pressed="true">Body</button>
+            <button type="button" data-view="head" aria-pressed="false">Head</button>
+          </div>
+          <button class="tool" id="btnAnatomy" type="button" aria-pressed="false">Anatomy notes</button>
+          <button class="tool" id="btnSpin" type="button" aria-pressed="false">Turn</button>
+        </div>
+      </div>
+
+      <aside class="life-evidence">
+        <h3 id="lifeName">—</h3>
+        <div class="sci" id="lifeSci"></div>
+        <div class="when" id="lifeWhen"></div>
+        <dl class="facts" id="lifeFacts"></dl>
+        <div id="hsPanel" hidden>
+          <div class="ev beyond"><h4>Anatomy notes</h4><ul class="hs-list" id="hsList"></ul></div>
+        </div>
+        <div class="ev bone"><h4>Built from these fossils</h4><ul class="fossils" id="evFossils"></ul></div>
+        <div class="ev bone"><h4>What the bones show</h4><ul id="evShows"></ul></div>
+        <div class="ev guess"><h4>Informed guesswork</h4><p id="evAssumed"></p></div>
+        <div class="ev beyond"><h4>Beyond the syllabus</h4><p id="evBeyond"></p></div>
+        <details class="refs"><summary>Sources</summary><ul id="evRefs"></ul></details>
+        <p class="ar-hint" id="arHint">Life-size AR needs a phone or tablet: open this page in Chrome on Android or Safari on iPhone and iPad, then tap “View life-size in your space”.</p>
+      </aside>
+    </div>
+
+    <div class="lineup-wrap">
+      <div class="lineup-cap">All seven to the same scale · lines every 0.5 m</div>
+      <div class="lineup" id="lineup"></div>
+    </div>
+    <p class="ar-hint">These figures are stylised reconstructions generated from fossil measurements. They are not photographs and not scans of the fossils; for the bones themselves, follow the Smithsonian links in the specimen record below.</p>
+  </section>
+
   <!-- ============ EXPLORER ============ -->
   <section id="explorer">
     <div class="sec-head">
-      <span class="num">01</span>
+      <span class="num">02</span>
       <h2>Specimen record</h2>
     </div>
 
@@ -329,7 +538,7 @@
   <!-- ============ CRANIAL CHART ============ -->
   <section id="brains">
     <div class="sec-head">
-      <span class="num">02</span>
+      <span class="num">03</span>
       <h2>The brain keeps growing</h2>
     </div>
     <p class="lede" style="margin-bottom:30px">The single thread that runs the whole lineage. Where the table records no measurement, the bar is left open.</p>
@@ -340,7 +549,7 @@
   <!-- ============ SITES ============ -->
   <section id="sites">
     <div class="sec-head">
-      <span class="num">03</span>
+      <span class="num">04</span>
       <h2>Where the bones surfaced</h2>
     </div>
     <p class="map-hint">Pick a specimen — in the lineage above or the cards below — and the map frames its fossil sites and links them. Click any marker to jump to that specimen.</p>
@@ -351,7 +560,7 @@
   <!-- ============ NARRATIVE ============ -->
   <section id="story">
     <div class="sec-head">
-      <span class="num">04</span>
+      <span class="num">05</span>
       <h2>The story in the strata</h2>
     </div>
     <div class="narrative">
@@ -375,7 +584,7 @@
         <div class="f-title">Origin &amp; Evolution of Man</div>
         <div class="mono license-line">Human evolution interactive App © 2026 by <a href="https://linktr.ee/thebioway" target="_blank" rel="noopener noreferrer">Vishal Bhoir</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></div>
       </div>
-      <div class="mono">Use ← → keys to walk the lineage</div>
+      <div class="mono license-line">Use ← → keys to walk the lineage<br>3D figures are original reconstructions built for this page on the MakeHuman base mesh (CC0); soft tissue is inferred. Viewer: &lt;model-viewer&gt; (Apache-2.0).</div>
     </div>
   </footer>
 
@@ -767,6 +976,9 @@ function select(i){
   // map
   updateMap(current);
 
+  // 3D life reconstruction
+  if (window.updateLife) window.updateLife(s);
+
   // bare-skull lateral view (endocranial tint scaled to capacity)
   svSpec.textContent = s.spec;
   headStage.classList.remove("show");
@@ -816,6 +1028,8 @@ function select(i){
 document.getElementById("prevBtn").addEventListener("click", ()=>select(current-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>select(current+1));
 document.addEventListener("keydown",(e)=>{
+  // inside the 3D viewer the arrow keys turn the model instead
+  if(e.target && e.target.closest && e.target.closest("model-viewer")) return;
   if(e.key==="ArrowRight") select(current+1);
   if(e.key==="ArrowLeft") select(current-1);
 });
@@ -894,5 +1108,7 @@ select(0);
 /* warm the photo cache for every stage so switching is instant */
 SPECIES.forEach(s => ensurePhoto(s));
 </script>
+<script src="models/models.js"></script>
+<script src="life.js"></script>
 </body>
 </html>
