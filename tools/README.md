@@ -92,3 +92,35 @@ Fossils) are non-commercial, which does not fit this site's CC BY-SA licence.
   Fetched from the `anny` package on PyPI, which redistributes them unchanged.
 * `vendor/model-viewer.min.js`: Google `<model-viewer>`, **Apache-2.0**.
 * The generated models and this code are part of the site and share its licence.
+
+# Skull diagrams (specimen record → "Diagram")
+
+The side-view skull diagrams are 2D vector drawings, not renders. Each skull
+is a list of landmarks in millimetres in `tools/diagrams/skulls.py`, oriented
+the standard craniometric way (origin at the ear opening, Frankfort
+horizontal as the baseline). Every skull is drawn at the same scale, so their
+sizes compare directly, and each follows a named specimen:
+
+| Stage | Drawn after | Dashed (reconstructed) |
+| --- | --- | --- |
+| Dryopithecus | Rudapithecus RUD 77 and RUD 200 | back and base of the skull |
+| Ramapithecus | Sivapithecus GSP 15000 (face) | the whole braincase |
+| Australopithecus | Sts 5 "Mrs Ples" | lower jaw |
+| Homo habilis | KNM-ER 1813 | lower jaw |
+| Homo erectus | Sangiran 17 | lower jaw |
+| Neanderthal | La Chapelle-aux-Saints 1 | none |
+| Homo sapiens | Cro-Magnon 1 | none |
+
+```bash
+pip install numpy shapely
+python tools/build_diagrams.py                 # -> diagrams/skulls.js
+python tools/build_diagrams.py --preview DIR   # also writes DIR/<id>.svg to look at
+```
+
+The build prints each skull's brain-space area divided by the specimen's
+cranial capacity to the power 2/3. Those numbers should stay close to one
+another; an outlier means that skull's vault is drawn too big or too small.
+
+To change a drawing, move its landmarks in `skulls.py` and rebuild. Labels
+(`labels=`) name the features that matter for that stage; keep each line to
+about 12 characters so the diagrams stay large.
