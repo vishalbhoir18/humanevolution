@@ -213,7 +213,8 @@
   }
   #map.map-fallback{display:flex;align-items:center;justify-content:center;padding:30px;height:200px}
   .map-note{max-width:540px;text-align:center;color:var(--bone-dim);font-family:var(--mono);font-size:.82rem;line-height:1.65}
-  .leaflet-container{background:var(--soil-2)!important;font-family:var(--mono)!important}
+  .leaflet-container{background:#15110d!important;font-family:var(--mono)!important}
+  .map-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.32em;color:rgba(212,180,131,.42);white-space:nowrap;pointer-events:none;transform:translate(-50%,-50%)}
   .leaflet-tooltip{
     background:var(--soil)!important;border:1px solid var(--patina)!important;color:var(--bone)!important;
     font-family:var(--mono)!important;font-size:.68rem!important;box-shadow:none!important;border-radius:3px!important;padding:4px 8px!important;
@@ -592,6 +593,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="vendor/topojson-client.min.js"></script>
+<script defer src="vendor/world-50m.js"></script>
 <script>
 /* ---------- DATA (from Table 5.18 + chapter text) ---------- */
 const SPECIES = [
@@ -859,15 +862,14 @@ function isFreeLicence(code, shortName){
   return t.includes("cc0") || t.includes("public domain") || t.includes("cc-by") || t.includes("cc by") || t.includes("attribution");
 }
 
-async function fetchPhotoInfo(file){
-  const api="https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=560&titles=File:"+encodeURIComponent(file);
-  const res=await fetch(api);
-  const json=await res.json();
-  const pages=json && json.query && json.query.pages;
-  if(!pages) return null;
-  const key=Object.keys(pages)[0];
-  if(key==="-1" || !pages[key].imageinfo) return null;
-  const ii=pages[key].imageinfo[0];
+/* All candidate files are looked up in ONE Commons API request (the API takes
+   up to 50 titles), instead of one request per file.  A burst of separate
+   requests on page load was being refused with HTTP 429 (rate limiting). */
+let commonsLookup = null;
+
+function photoInfoFrom(page, file){
+  const ii = page && page.imageinfo && page.imageinfo[0];
+  if(!ii) return null;
   const m=ii.extmetadata||{};
   const code=(m.License&&m.License.value)||"";
   const short=(m.LicenseShortName&&m.LicenseShortName.value)||"";
@@ -881,17 +883,42 @@ async function fetchPhotoInfo(file){
   };
 }
 
+function lookupAllPhotos(){
+  if(commonsLookup) return commonsLookup;
+  const files=[...new Set(SPECIES.flatMap(s => s.photos || []))];
+  const api="https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*"
+    +"&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=560"
+    +"&iiextmetadatafilter=License%7CLicenseShortName%7CLicenseUrl%7CArtist"
+    +"&titles="+encodeURIComponent(files.map(f => "File:"+f).join("|"));
+  commonsLookup=(async()=>{
+    for(let attempt=0; attempt<3; attempt++){
+      if(attempt) await new Promise(r => setTimeout(r, 1500*attempt*attempt));
+      let res;
+      try{ res=await fetch(api); }catch(e){ continue; }
+      if(res.status===429 || res.status>=500) continue;      // busy: back off and retry
+      if(!res.ok) break;
+      const q=(await res.json()).query || {};
+      const norm={}; (q.normalized||[]).forEach(n => norm[n.from]=n.to);
+      const byTitle={}; (q.pages||[]).forEach(pg => byTitle[pg.title]=pg);
+      const out={};
+      files.forEach(f => { const t="File:"+f; out[f]=photoInfoFrom(byTitle[norm[t]||t], f); });
+      return out;
+    }
+    return {};
+  })();
+  return commonsLookup;
+}
+
 async function ensurePhoto(s){
   if(photoCache[s.id]) return;
   if(!s.photos || !s.photos.length){ photoCache[s.id]={status:"none"}; return; }
   photoCache[s.id]={status:"loading"};
-  for(const f of s.photos){
-    try{
-      const info=await fetchPhotoInfo(f);
-      if(info){ photoCache[s.id]={status:"ok", data:info}; if(SPECIES[current].id===s.id) renderVisual(s); return; }
-    }catch(e){ /* network/CSP blocked -> fall through to SVG */ }
-  }
-  photoCache[s.id]={status:"none"};
+  let info=null;
+  try{
+    const all=await lookupAllPhotos();
+    info=s.photos.map(f => all[f]).find(Boolean) || null;   // first freely licensed candidate
+  }catch(e){ /* network/CSP blocked -> fall through to SVG */ }
+  photoCache[s.id]= info ? {status:"ok", data:info} : {status:"none"};
   if(SPECIES[current].id===s.id) renderVisual(s);
 }
 
@@ -1037,6 +1064,28 @@ document.addEventListener("keydown",(e)=>{
 /* ---------- WORLD MAP (Leaflet, gracefully optional) ---------- */
 let mapReady = false, lmap = null, markerGroups = {}, connectLayer = null;
 
+function addBasemap(){
+  const W = window.WORLD_TOPO;
+  if (!lmap || !W || typeof topojson === "undefined" || lmap._basemap) return;
+  lmap._basemap = true;
+  const r = L.canvas({ padding:.5 });
+  const lines = [];
+  for (let lon=-180; lon<=180; lon+=30) lines.push([[-80,lon],[85,lon]]);
+  for (let lat=-60; lat<=60; lat+=30) lines.push([[lat,-180],[lat,180]]);
+  const base = L.featureGroup([
+    L.polyline(lines, { renderer:r, interactive:false, color:"#d4b483", opacity:.07, weight:1 }),
+    L.geoJSON(topojson.feature(W, W.objects.land), { renderer:r, interactive:false,
+      style:{ color:"#a8763e", opacity:.45, weight:.8, fillColor:"#3a2d20", fillOpacity:1 } }),
+    L.geoJSON(topojson.mesh(W, W.objects.countries, (a,b) => a !== b), { renderer:r, interactive:false,
+      style:{ color:"#d4b483", opacity:.3, weight:.6, fill:false } })
+  ]).addTo(lmap);
+  base.bringToBack();
+  [["AFRICA",8,14],["EUROPE",57,30],["ASIA",50,92]].forEach(([t,lat,lng]) =>
+    L.marker([lat,lng], { interactive:false, keyboard:false,
+      icon:L.divIcon({ className:"map-label", html:t, iconSize:null }) }).addTo(lmap));
+  lmap.attributionControl.addAttribution('Outlines: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a>');
+}
+
 function initMap(){
   const el = document.getElementById("map");
   if (typeof L === "undefined"){
@@ -1045,10 +1094,14 @@ function initMap(){
     return;
   }
   try{
-    lmap = L.map(el, { zoomControl:true, worldCopyJump:true, scrollWheelZoom:false, minZoom:1 }).setView([18,25], 2);
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution:'© OpenStreetMap, © CARTO', subdomains:"abcd", maxZoom:8
-    }).addTo(lmap);
+    lmap = L.map(el, {
+      zoomControl:true, scrollWheelZoom:false, minZoom:2, maxZoom:6,
+      maxBounds:[[-80,-215],[88,215]], maxBoundsViscosity:.8
+    }).setView([18,25], 2);
+    // Basemap drawn from bundled Natural Earth outlines: no tile server, no API key.
+    // (The previous CARTO tiles began requiring a key and showed "API KEY REQUIRED".)
+    if (window.WORLD_TOPO && typeof topojson !== "undefined") addBasemap();
+    else document.addEventListener("DOMContentLoaded", addBasemap, { once:true });
     connectLayer = L.layerGroup().addTo(lmap);
 
     SPECIES.forEach((s,i)=>{
