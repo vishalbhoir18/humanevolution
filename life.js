@@ -125,7 +125,7 @@ const RECON = {
     assumed: "Arm-to-leg ratio: OH 62 is too incomplete to settle it, so the model uses Lucy-like proportions. Body hair is drawn part-way between ape and human.",
     beyond: "The syllabus says Homo habilis probably did not eat meat. Cut-marked animal bones found with early stone tools show that toolmakers of this period butchered carcasses.",
     notes: {
-      braincase: ["Braincase", "About 500–700 cc in the best-preserved skulls (650–800 cc in the syllabus table), clearly above Australopithecus."],
+      braincase: ["Braincase", "About 510–825 cc in the best-preserved skulls (650–800 cc in the syllabus table), clearly above Australopithecus."],
       brow: ["Brow", "A slight brow ridge above a forehead that begins to rise."],
       face: ["Jaws and teeth", "Lower jaw lightly built, molars smaller, the tooth row more like ours."],
       hand: ["Hand", "The OH 7 hand has a strong, mobile thumb suited to gripping stone, though the fingers stay curved."],
