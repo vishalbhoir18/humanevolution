@@ -9,11 +9,13 @@ An interactive, evidence-aware journey through human evolution — from Miocene 
 ## What you can explore
 
 - Seven 3D life reconstructions that can stand, walk, turn, and display anatomy hotspots
+- A branching evolutionary tree of about 30 species, from Miocene apes through Ardipithecus, the australopiths and Paranthropus to Neanderthals, Denisovans and Homo sapiens, with expandable groups and key evolutionary leaps
 - Life-size augmented reality for supported phones and tablets
 - Fossil skull diagrams and specimen records
 - Cranial-capacity comparisons
 - A map of important fossil sites
 - Evidence, uncertainty, and source notes for every reconstruction
+- A collapsible APA 7 reference list of the research behind the site
 
 ## Included stages
 

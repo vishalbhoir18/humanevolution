@@ -124,3 +124,26 @@ another; an outlier means that skull's vault is drawn too big or too small.
 To change a drawing, move its landmarks in `skulls.py` and rebuild. Labels
 (`labels=`) name the features that matter for that stage; keep each line to
 about 12 characters so the diagrams stay large.
+
+# Branching tree (section "Not a ladder: a branching bush")
+
+`tree.js` draws the tree as plain SVG from the `TAXA` table at the top of the
+file; no library is needed. For each species it stores:
+
+- **Time span:** `start` and `end`, the oldest and youngest fossils in millions of years ago.
+- **Parent link:** `parent: [id, branch time, "solid" | "dashed"]`. Solid means broadly accepted descent; dashed means debated.
+- **Descriptive text:** shown in the detail card.
+
+`GROUPS` sets the row order and which species fold together in the
+"Syllabus view". `GENEFLOW` lists the interbreeding arrows. `MILESTONES` and
+`LEAPS` hold the key-leap markers and cards. To add a species, add it to
+`TAXA` and to one group's `members`.
+
+# Reference list
+
+`python tools/build_references.py` rebuilds the APA list at the end of
+`index.html` from the DOIs in that script. Details come from Crossref, so they
+match each publisher's record. Fields that Crossref has incomplete are
+corrected in `FIX`, and software and data sources are listed in `OTHER`. The
+script needs internet access to `api.crossref.org`; it caches what it fetches
+in `tools/.cache/`.

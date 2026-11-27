@@ -396,6 +396,111 @@
     .seg button,.tool{padding:9px 10px}
   }
 
+
+
+  /* ---------- REFERENCES (collapsible) ---------- */
+  .refs{padding:30px 0 10px}
+  .ref-drawer{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ref-drawer summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;padding:20px 0}
+  .ref-drawer summary::-webkit-details-marker{display:none}
+  .ref-drawer summary .num{font-family:var(--mono);color:var(--ochre);font-size:.8rem;letter-spacing:.1em}
+  .ref-title{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,2.6vw,1.7rem);color:var(--bone)}
+  .ref-meta{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--bone-dim);text-transform:uppercase}
+  .ref-chev{margin-left:auto;font-family:var(--mono);font-size:.7rem;color:var(--patina-bright);letter-spacing:.06em}
+  .ref-chev::after{content:"Show"}
+  .ref-drawer[open] .ref-chev::after{content:"Hide"}
+  .ref-drawer summary:hover .ref-title,.ref-drawer summary:focus-visible .ref-title{color:var(--patina-bright)}
+  .ref-drawer summary:focus-visible{outline:2px solid var(--patina-bright);outline-offset:4px}
+  .ref-intro{color:var(--bone-dim);font-size:.92rem;max-width:760px;margin:0 0 18px}
+  .ref-list{list-style:none;margin:0 0 26px;padding:0;columns:1}
+  .ref-list li{padding-left:2.2em;text-indent:-2.2em;margin:0 0 10px;font-size:.84rem;line-height:1.55;color:var(--bone);overflow-wrap:anywhere}
+  .ref-list a{color:var(--patina-bright);text-decoration:none}
+  .ref-list a:hover{text-decoration:underline}
+
+  /* ---------- BRANCHING TREE ---------- */
+  .tree-tools{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;margin-bottom:14px}
+  .tree-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--mono);font-size:.62rem;color:var(--bone-dim);letter-spacing:.03em}
+  .tree-legend span{display:inline-flex;align-items:center;gap:6px}
+  .lg-sw{width:12px;height:8px;border-radius:2px;display:inline-block}
+  .lg-ln{width:20px;border-top:1.5px solid var(--pale);display:inline-block}
+  .lg-ln.lg-dash{border-top-style:dashed}
+  .lg-ln.lg-dot{border-top:2px dotted var(--bone-dim)}
+  .lg-flow{width:20px;border-top:1.5px dashed var(--patina-bright);display:inline-block}
+  .tree-swipe{display:none;font-family:var(--mono);font-size:.64rem;color:var(--bone-dim);margin-bottom:8px}
+  .tree-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.18);scrollbar-width:thin;scrollbar-color:var(--umber) transparent}
+  .tree-svg{display:block;width:100%;min-width:900px;height:auto}
+  .tr-grid-line{stroke:rgba(212,180,131,.07);stroke-width:1}
+  .tr-grid-break{stroke:rgba(212,180,131,.22);stroke-dasharray:2 4}
+  .tr-axis-line,.tr-tick{stroke:var(--bone-dim);stroke-width:1}
+  .tr-axis-text{font-family:var(--mono);font-size:10.5px;fill:var(--bone-dim)}
+  .tr-axis-cap{font-family:var(--mono);font-size:10px;fill:var(--bone-dim);letter-spacing:.04em}
+  .tr-mile-line{stroke:rgba(105,196,177,.25);stroke-dasharray:1 3}
+  .tr-mile-dot{fill:var(--patina-bright)}
+  .tr-mile-text{font-family:var(--mono);font-size:10.5px;fill:var(--patina-bright);letter-spacing:.02em}
+  .tr-mile.is-lit .tr-mile-line{stroke:var(--patina-bright);stroke-dasharray:none;stroke-width:1.6}
+  .tr-mile.is-lit .tr-mile-text{font-weight:600}
+  .tr-row{transition:transform .36s cubic-bezier(.2,.8,.2,1),opacity .3s}
+  .tr-bar{stroke:rgba(0,0,0,.35);stroke-width:.6}
+  .tr-marks{cursor:pointer}
+  .tr-ghost{stroke:var(--bone-dim);stroke-width:1.4;stroke-dasharray:1.5 3.5;stroke-linecap:round;opacity:.8;fill:none}
+  .tr-living{stroke-width:2;opacity:.55}
+  .tr-tail{font-family:var(--mono);font-size:10px;fill:var(--bone-dim)}
+  .tr-label{cursor:pointer;outline:none}
+  .tr-text{font-family:var(--body);font-size:13px;fill:var(--bone);paint-order:stroke;stroke:#1b1510;stroke-width:4px;stroke-linejoin:round}
+  .tr-text-ghost{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;fill:var(--bone-dim)}
+  .tr-name{font-family:var(--display);font-weight:500}
+  .tr-ital{font-style:italic}
+  .tr-nick{fill:var(--sand);font-size:11.5px;font-style:italic}
+  .tr-date{font-family:var(--mono);font-size:10.5px;fill:var(--bone-dim)}
+  .tr-chip{font-family:var(--mono);font-size:10.5px;fill:var(--patina-bright)}
+  .tr-num{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--patina-bright)}
+  .tr-head-text{font-family:var(--mono);font-size:10px;letter-spacing:.14em;fill:var(--ochre);paint-order:stroke;stroke:#1b1510;stroke-width:4px}
+  .tr-label:hover .tr-name,.tr-label:focus-visible .tr-name,.tr-label:focus-visible .tr-head-text{fill:var(--patina-bright);text-decoration:underline}
+  .tr-link{fill:none;stroke:rgba(212,180,131,.55);stroke-width:1.4}
+  .tr-link.tr-dashed{stroke-dasharray:5 4}
+  .tr-link.on-path{stroke:var(--patina-bright);stroke-width:2.2}
+  .tr-links,.tr-flow{transition:opacity .25s}
+  .tr-flow-line{stroke:var(--patina-bright);stroke-width:1.4;stroke-dasharray:2 3}
+  .tr-arrowhead{fill:var(--patina-bright)}
+  .tr-row.on-path .tr-bar{stroke:var(--bone);stroke-width:1.3}
+  .tr-row.is-selected .tr-bar{stroke:var(--patina-bright);stroke-width:2.2}
+  .tr-row.is-selected .tr-name,.tr-row.is-lit .tr-name{fill:var(--patina-bright)}
+  .tr-row.is-lit .tr-bar{stroke:var(--patina-bright);stroke-width:1.6}
+  .tree-svg.tr-focusing .tr-row:not(.is-lit):not(.tr-header){opacity:.3}
+  .tree-svg.tr-focusing .tr-link{opacity:.35}
+  .tree-hint{font-family:var(--mono);font-size:.66rem;color:var(--bone-dim);margin:10px 0 14px;letter-spacing:.02em}
+  .tree-card{border:1px solid var(--line);border-radius:4px;background:var(--soil-2);padding:18px 20px;min-height:84px}
+  .tree-card p{color:var(--bone);font-size:.95rem;margin-bottom:8px;max-width:840px}
+  .tc-intro{color:var(--bone-dim)!important}
+  .tc-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:2px}
+  .tc-head h3{font-family:var(--display);font-weight:600;font-size:1.35rem;color:var(--bone)}
+  .tc-ital{font-style:italic}
+  .tc-sw{width:12px;height:12px;border-radius:2px;align-self:center}
+  .tc-nick{font-family:var(--display);font-style:italic;color:var(--sand)}
+  .tc-stage{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--patina-bright);border:1px solid var(--patina);border-radius:3px;padding:3px 7px}
+  .tc-meta{font-family:var(--mono);font-size:.7rem;color:var(--bone-dim);margin:6px 0 10px;line-height:1.6}
+  .tc-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;margin:12px 0}
+  .tc-facts div{background:var(--soil);padding:9px 12px}
+  .tc-facts dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ochre)}
+  .tc-facts dd{font-size:.86rem;color:var(--bone);margin-top:3px}
+  .tree-card .tc-debate{color:var(--bone-dim);font-size:.88rem}
+  .tc-debate b{color:var(--ochre);font-weight:500}
+  .tree-card .tc-path{font-family:var(--mono);font-size:.7rem;color:var(--bone-dim)}
+  .tc-path b{color:var(--patina-bright);font-weight:500}
+  .tc-open,.tc-members button,.leap button{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--patina-bright);border:1px solid var(--patina);border-radius:3px;background:rgba(79,163,146,.06);padding:8px 12px;cursor:pointer;transition:.2s}
+  .tc-open:hover,.tc-members button:hover,.leap button:hover{background:var(--patina);color:var(--soil)}
+  .tc-open:focus-visible,.tc-members button:focus-visible,.leap button:focus-visible{outline:2px solid var(--patina-bright);outline-offset:2px}
+  .tc-members{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .tree-sub{font-family:var(--display);font-weight:600;font-size:1.3rem;color:var(--bone);margin:34px 0 14px}
+  .leaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .leap{background:var(--soil-2);padding:18px;display:flex;flex-direction:column;gap:8px}
+  .leap.on{background:rgba(79,163,146,.12);box-shadow:inset 3px 0 0 var(--patina-bright)}
+  .leap-when{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--patina-bright)}
+  .leap h4{font-family:var(--display);font-weight:600;font-size:1.08rem;color:var(--bone)}
+  .leap p{font-size:.9rem;color:var(--bone-dim);flex:1}
+  .leap button{align-self:flex-start}
+  @media (max-width:940px){ .tree-swipe{display:block} }
+
   @media (max-width:840px){
     .explorer{grid-template-columns:1fr;gap:26px}
     .specimen-visual{position:static}
@@ -492,10 +597,32 @@
     <p class="ar-hint">These figures are stylised reconstructions generated from fossil measurements. They are not photographs and not scans of the fossils; for the bones themselves, follow the Smithsonian links in the specimen record below.</p>
   </section>
 
+  <!-- ============ BRANCHING TREE ============ -->
+  <section id="tree">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>Not a ladder: a branching bush</h2>
+    </div>
+    <p class="lede" style="margin-bottom:22px">The seven stages follow the syllabus as a single line. The fossils tell a bushier story: several kinds of hominin often lived at the same time, most branches ended without descendants, and upright walking evolved millions of years before big brains. Open a group to meet the transitional forms in between.</p>
+    <div class="tree-tools">
+      <div class="seg" role="group" aria-label="How much of the tree to show">
+        <button type="button" id="treeSimple" aria-pressed="true">Syllabus view</button>
+        <button type="button" id="treeAll" aria-pressed="false">Every species</button>
+      </div>
+      <div class="tree-legend" id="treeLegend"></div>
+    </div>
+    <div class="tree-swipe">Swipe sideways to see the whole tree →</div>
+    <div class="tree-scroll"><div id="treeChart"></div></div>
+    <p class="tree-hint">Bars span the known fossils of each species. Numbered rows are the seven syllabus stages. Click any branch for details; ▸ opens a group.</p>
+    <div class="tree-card" id="treeCard" aria-live="polite"></div>
+    <h3 class="tree-sub">Key leaps</h3>
+    <div class="leaps" id="treeLeaps"></div>
+  </section>
+
   <!-- ============ EXPLORER ============ -->
   <section id="explorer">
     <div class="sec-head">
-      <span class="num">02</span>
+      <span class="num">03</span>
       <h2>Specimen record</h2>
     </div>
 
@@ -541,7 +668,7 @@
   <!-- ============ CRANIAL CHART ============ -->
   <section id="brains">
     <div class="sec-head">
-      <span class="num">03</span>
+      <span class="num">04</span>
       <h2>The brain keeps growing</h2>
     </div>
     <p class="lede" style="margin-bottom:30px">The single thread that runs the whole lineage. Where the table records no measurement, the bar is left open.</p>
@@ -552,7 +679,7 @@
   <!-- ============ SITES ============ -->
   <section id="sites">
     <div class="sec-head">
-      <span class="num">04</span>
+      <span class="num">05</span>
       <h2>Where the bones surfaced</h2>
     </div>
     <p class="map-hint">Pick a specimen — in the lineage above or the cards below — and the map frames its fossil sites and links them. Click any marker to jump to that specimen.</p>
@@ -563,7 +690,7 @@
   <!-- ============ NARRATIVE ============ -->
   <section id="story">
     <div class="sec-head">
-      <span class="num">05</span>
+      <span class="num">06</span>
       <h2>The story in the strata</h2>
     </div>
     <div class="narrative">
@@ -579,6 +706,99 @@
       </div>
       <blockquote class="pull">Each layer carries a little more brain than the one beneath it — from roughly 500 cc to 1450 cc across the climb.</blockquote>
     </div>
+  </section>
+
+  <!-- ============ REFERENCES ============ -->
+  <section id="references" class="refs">
+    <details class="ref-drawer">
+      <summary>
+        <span class="num">07</span>
+        <span class="ref-title">References</span>
+        <span class="ref-meta"><span class="ref-count" id="refCount">76</span> sources · APA 7th edition</span>
+        <span class="ref-chev" aria-hidden="true"></span>
+      </summary>
+      <p class="ref-intro">The published research, data and software used to build the reconstructions, skull diagrams, branching tree and text on this page. Journal details come from each publisher's record; fossil photographs are credited where they appear.</p>
+      <ul class="ref-list">
+        <!-- REFERENCES:BEGIN -->
+        <li>Alemseged, Z., Spoor, F., Kimbel, W. H., Bobe, R., Geraads, D., Reed, D., &amp; Wynn, J. G. (2006). A juvenile early hominin skeleton from Dikika, Ethiopia. <i>Nature</i>, <i>443</i>(7109), 296–301. <a href="https://doi.org/10.1038/nature05047">https://doi.org/10.1038/nature05047</a></li>
+        <li>Almécija, S., Alba, D. M., Moyà-Solà, S., &amp; Köhler, M. (2007). Orang-like manual adaptations in the fossil hominoid <i>Hispanopithecus laietanus</i>: First steps towards great ape suspensory behaviours. <i>Proceedings of the Royal Society B: Biological Sciences</i>, <i>274</i>(1624), 2375–2384. <a href="https://doi.org/10.1098/rspb.2007.0750">https://doi.org/10.1098/rspb.2007.0750</a></li>
+        <li>Arsuaga, J. L., Martínez, I., Arnold, L. J., Aranburu, A., Gracia-Téllez, A., Sharp, W. D., Quam, R. M., Falguères, C., Pantoja-Pérez, A., Bischoff, J., Poza-Rey, E., Parés, J. M., Carretero, J. M., Demuro, M., Lorenzo, C., Sala, N., Martinón-Torres, M., García, N., Alcázar de Velasco, A., . . . Carbonell, E. (2014). Neandertal roots: Cranial and chronological evidence from Sima de los Huesos. <i>Science</i>, <i>344</i>(6190), 1358–1363. <a href="https://doi.org/10.1126/science.1253958">https://doi.org/10.1126/science.1253958</a></li>
+        <li>Asfaw, B., White, T., Lovejoy, O., Latimer, B., Simpson, S., &amp; Suwa, G. (1999). <i>Australopithecus garhi</i>: A new species of early hominid from Ethiopia. <i>Science</i>, <i>284</i>(5414), 629–635. <a href="https://doi.org/10.1126/science.284.5414.629">https://doi.org/10.1126/science.284.5414.629</a></li>
+        <li>Berger, L. R., de Ruiter, D. J., Churchill, S. E., Schmid, P., Carlson, K. J., Dirks, P. H. G. M., &amp; Kibii, J. M. (2010). <i>Australopithecus sediba</i>: A new species of <i>Homo</i>-like australopith from South Africa. <i>Science</i>, <i>328</i>(5975), 195–204. <a href="https://doi.org/10.1126/science.1184944">https://doi.org/10.1126/science.1184944</a></li>
+        <li>Berger, L. R., Hawks, J., de Ruiter, D. J., Churchill, S. E., Schmid, P., Delezene, L. K., Kivell, T. L., Garvin, H. M., Williams, S. A., DeSilva, J. M., Skinner, M. M., Musiba, C. M., Cameron, N., Holliday, T. W., Harcourt-Smith, W., Ackermann, R. R., Bastir, M., Bogin, B., Bolter, D., . . . Zipfel, B. (2015). <i>Homo naledi</i>, a new species of the genus <i>Homo</i> from the Dinaledi Chamber, South Africa. <i>eLife</i>, <i>4</i>, Article e09560. <a href="https://doi.org/10.7554/elife.09560">https://doi.org/10.7554/elife.09560</a></li>
+        <li>Berna, F., Goldberg, P., Horwitz, L. K., Brink, J., Holt, S., Bamford, M., &amp; Chazan, M. (2012). Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa. <i>Proceedings of the National Academy of Sciences</i>, <i>109</i>(20), E1215–E1220. <a href="https://doi.org/10.1073/pnas.1117620109">https://doi.org/10.1073/pnas.1117620109</a></li>
+        <li>Blender Foundation. (n.d.). <i>Blender</i> (Version 5.3) [Computer software]. <a href="https://www.blender.org/">https://www.blender.org/</a></li>
+        <li>Bostock, M. (n.d.). <i>world-atlas</i> (Version 2.0.2) [Computer software]. <a href="https://github.com/topojson/world-atlas">https://github.com/topojson/world-atlas</a></li>
+        <li>Brégier, R. (2026). <i>anny</i> (Version 0.6.2) [Computer software]. NAVER LABS Europe. <a href="https://pypi.org/project/anny/">https://pypi.org/project/anny/</a></li>
+        <li>Brown, F., Harris, J., Leakey, R., &amp; Walker, A. (1985). Early <i>Homo erectus</i> skeleton from west Lake Turkana, Kenya. <i>Nature</i>, <i>316</i>(6031), 788–792. <a href="https://doi.org/10.1038/316788a0">https://doi.org/10.1038/316788a0</a></li>
+        <li>Brown, P., Sutikna, T., Morwood, M. J., Soejono, R. P., Jatmiko, Wayhu Saptomo, E., &amp; Awe Due, R. (2004). A new small-bodied hominin from the Late Pleistocene of Flores, Indonesia. <i>Nature</i>, <i>431</i>(7012), 1055–1061. <a href="https://doi.org/10.1038/nature02999">https://doi.org/10.1038/nature02999</a></li>
+        <li>Brunet, M., Guy, F., Pilbeam, D., Mackaye, H. T., Likius, A., Ahounta, D., Beauvilain, A., Blondel, C., Bocherens, H., Boisserie, J.-R., De Bonis, L., Coppens, Y., Dejax, J., Denys, C., Duringer, P., Eisenmann, V., Fanone, G., Fronty, P., Geraads, D., . . . Zollikofer, C. (2002). A new hominid from the Upper Miocene of Chad, Central Africa. <i>Nature</i>, <i>418</i>(6894), 145–151. <a href="https://doi.org/10.1038/nature00879">https://doi.org/10.1038/nature00879</a></li>
+        <li>Cerling, T. E., Mbua, E., Kirera, F. M., Manthi, F. K., Grine, F. E., Leakey, M. G., Sponheimer, M., &amp; Uno, K. T. (2011). Diet of <i>Paranthropus boisei</i> in the early Pleistocene of East Africa. <i>Proceedings of the National Academy of Sciences</i>, <i>108</i>(23), 9337–9341. <a href="https://doi.org/10.1073/pnas.1104627108">https://doi.org/10.1073/pnas.1104627108</a></li>
+        <li>Chen, F., Welker, F., Shen, C.-C., Bailey, S. E., Bergmann, I., Davis, S., Xia, H., Wang, H., Fischer, R., Freidline, S. E., Yu, T.-L., Skinner, M. M., Stelzer, S., Dong, G., Fu, Q., Dong, G., Wang, J., Zhang, D., &amp; Hublin, J.-J. (2019). A late Middle Pleistocene Denisovan mandible from the Tibetan Plateau. <i>Nature</i>, <i>569</i>(7756), 409–412. <a href="https://doi.org/10.1038/s41586-019-1139-x">https://doi.org/10.1038/s41586-019-1139-x</a></li>
+        <li>Dart, R. A. (1925). <i>Australopithecus africanus</i>: The man-ape of South Africa. <i>Nature</i>, <i>115</i>(2884), 195–199. <a href="https://doi.org/10.1038/115195a0">https://doi.org/10.1038/115195a0</a></li>
+        <li>Détroit, F., Mijares, A. S., Corny, J., Daver, G., Zanolli, C., Dizon, E., Robles, E., Grün, R., &amp; Piper, P. J. (2019). A new species of <i>Homo</i> from the Late Pleistocene of the Philippines. <i>Nature</i>, <i>568</i>(7751), 181–186. <a href="https://doi.org/10.1038/s41586-019-1067-9">https://doi.org/10.1038/s41586-019-1067-9</a></li>
+        <li>Dirks, P. H. G. M., Roberts, E. M., Hilbert-Wolf, H., Kramers, J. D., Hawks, J., Dosseto, A., Duval, M., Elliott, M., Evans, M., Grün, R., Hellstrom, J., Herries, A. I. R., Joannes-Boyau, R., Makhubela, T. V., Placzek, C. J., Robbins, J., Spandler, C., Wiersma, J., Woodhead, J., &amp; Berger, L. R. (2017). The age of <i>Homo naledi</i> and associated sediments in the Rising Star Cave, South Africa. <i>eLife</i>, <i>6</i>, Article e24231. <a href="https://doi.org/10.7554/elife.24231">https://doi.org/10.7554/elife.24231</a></li>
+        <li>Fu, Q., Bai, F., Rao, H., Chen, S., Ji, Y., Liu, A., Bennett, E. A., Liu, F., &amp; Ji, Q. (2025). The proteome of the late Middle Pleistocene Harbin individual. <i>Science</i>, <i>389</i>(6761), 704–707. <a href="https://doi.org/10.1126/science.adu9677">https://doi.org/10.1126/science.adu9677</a></li>
+        <li>Fu, Q., Cao, P., Dai, Q., Bennett, E. A., Feng, X., Yang, M. A., Ping, W., Pääbo, S., &amp; Ji, Q. (2025). Denisovan mitochondrial DNA from dental calculus of the &gt;146,000-year-old Harbin cranium. <i>Cell</i>, <i>188</i>(15), 3919–3926.e9. <a href="https://doi.org/10.1016/j.cell.2025.05.040">https://doi.org/10.1016/j.cell.2025.05.040</a></li>
+        <li>Google. (n.d.). <i>&lt;model-viewer&gt;</i> (Version 4.4.0) [Computer software]. <a href="https://modelviewer.dev/">https://modelviewer.dev/</a></li>
+        <li>Granger, D. E., Gibbon, R. J., Kuman, K., Clarke, R. J., Bruxelles, L., &amp; Caffee, M. W. (2015). New cosmogenic burial ages for Sterkfontein Member 2 <i>Australopithecus</i> and Member 5 Oldowan. <i>Nature</i>, <i>522</i>(7554), 85–88. <a href="https://doi.org/10.1038/nature14268">https://doi.org/10.1038/nature14268</a></li>
+        <li>Green, R. E., Krause, J., Briggs, A. W., Maricic, T., Stenzel, U., Kircher, M., Patterson, N., Li, H., Zhai, W., Fritz, M. H.-Y., Hansen, N. F., Durand, E. Y., Malaspinas, A.-S., Jensen, J. D., Marques-Bonet, T., Alkan, C., Prüfer, K., Meyer, M., Burbano, H. A., . . . Pääbo, S. (2010). A draft sequence of the Neandertal genome. <i>Science</i>, <i>328</i>(5979), 710–722. <a href="https://doi.org/10.1126/science.1188021">https://doi.org/10.1126/science.1188021</a></li>
+        <li>Grün, R., &amp; Stringer, C. (2023). Direct dating of human fossils and the ever-changing story of human evolution. <i>Quaternary Science Reviews</i>, <i>322</i>, Article 108379. <a href="https://doi.org/10.1016/j.quascirev.2023.108379">https://doi.org/10.1016/j.quascirev.2023.108379</a></li>
+        <li>Haile-Selassie, Y., Latimer, B. M., Alene, M., Deino, A. L., Gibert, L., Melillo, S. M., Saylor, B. Z., Scott, G. R., &amp; Lovejoy, C. O. (2010). An early <i>Australopithecus afarensis</i> postcranium from Woranso-Mille, Ethiopia. <i>Proceedings of the National Academy of Sciences</i>, <i>107</i>(27), 12121–12126. <a href="https://doi.org/10.1073/pnas.1004527107">https://doi.org/10.1073/pnas.1004527107</a></li>
+        <li>Haile-Selassie, Y., Melillo, S. M., Vazzana, A., Benazzi, S., &amp; Ryan, T. M. (2019). A 3.8-million-year-old hominin cranium from Woranso-Mille, Ethiopia. <i>Nature</i>, <i>573</i>(7773), 214–219. <a href="https://doi.org/10.1038/s41586-019-1513-8">https://doi.org/10.1038/s41586-019-1513-8</a></li>
+        <li>Haile-Selassie, Y., Suwa, G., &amp; White, T. D. (2004). Late Miocene teeth from Middle Awash, Ethiopia, and early hominid dental evolution. <i>Science</i>, <i>303</i>(5663), 1503–1505. <a href="https://doi.org/10.1126/science.1092978">https://doi.org/10.1126/science.1092978</a></li>
+        <li>Harmand, S., Lewis, J. E., Feibel, C. S., Lepre, C. J., Prat, S., Lenoble, A., Boës, X., Quinn, R. L., Brenet, M., Arroyo, A., Taylor, N., Clément, S., Daver, G., Brugal, J.-P., Leakey, L., Mortlock, R. A., Wright, J. D., Lokorodi, S., Kirwa, C., . . . Roche, H. (2015). 3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya. <i>Nature</i>, <i>521</i>(7552), 310–315. <a href="https://doi.org/10.1038/nature14464">https://doi.org/10.1038/nature14464</a></li>
+        <li>Heaton, J. L., Pickering, T. R., Carlson, K. J., Crompton, R. H., Jashashvili, T., Beaudet, A., Bruxelles, L., Kuman, K., Heile, A. J., Stratford, D., &amp; Clarke, R. J. (2019). The long limb bones of the StW 573 <i>Australopithecus</i> skeleton from Sterkfontein Member 2: Descriptions and proportions. <i>Journal of Human Evolution</i>, <i>133</i>, 167–197. <a href="https://doi.org/10.1016/j.jhevol.2019.05.015">https://doi.org/10.1016/j.jhevol.2019.05.015</a></li>
+        <li>Herries, A. I. R., Martin, J. M., Leece, A. B., Adams, J. W., Boschian, G., Joannes-Boyau, R., Edwards, T. R., Mallett, T., Massey, J., Murszewski, A., Neubauer, S., Pickering, R., Strait, D. S., Armstrong, B. J., Baker, S., Caruana, M. V., Denham, T., Hellstrom, J., Moggi-Cecchi, J., . . . Menter, C. (2020). Contemporaneity of <i>Australopithecus</i>, <i>Paranthropus</i>, and early <i>Homo erectus</i> in South Africa. <i>Science</i>, <i>368</i>(6486), Article eaaw7293. <a href="https://doi.org/10.1126/science.aaw7293">https://doi.org/10.1126/science.aaw7293</a></li>
+        <li>Hublin, J.-J., Ben-Ncer, A., Bailey, S. E., Freidline, S. E., Neubauer, S., Skinner, M. M., Bergmann, I., Le Cabec, A., Benazzi, S., Harvati, K., &amp; Gunz, P. (2017). New fossils from Jebel Irhoud, Morocco and the pan-African origin of <i>Homo sapiens</i>. <i>Nature</i>, <i>546</i>(7657), 289–292. <a href="https://doi.org/10.1038/nature22336">https://doi.org/10.1038/nature22336</a></li>
+        <li>Huerta-Sánchez, E., Jin, X., Asan, Bianba, Z., Peter, B. M., Vinckenbosch, N., Liang, Y., Yi, X., He, M., Somel, M., Ni, P., Wang, B., Ou, X., Huasang, Luosang, J., Cuo, Z. X. P., Li, K., Gao, G., Yin, Y., . . . Nielsen, R. (2014). Altitude adaptation in Tibetans caused by introgression of Denisovan-like DNA. <i>Nature</i>, <i>512</i>(7513), 194–197. <a href="https://doi.org/10.1038/nature13408">https://doi.org/10.1038/nature13408</a></li>
+        <li>Johanson, D. C., &amp; White, T. D. (1979). A systematic assessment of early African hominids. <i>Science</i>, <i>203</i>(4378), 321–330. <a href="https://doi.org/10.1126/science.104384">https://doi.org/10.1126/science.104384</a></li>
+        <li>Jungers, W. L. (1982). Lucy's limbs: Skeletal allometry and locomotion in <i>Australopithecus afarensis</i>. <i>Nature</i>, <i>297</i>(5868), 676–678. <a href="https://doi.org/10.1038/297676a0">https://doi.org/10.1038/297676a0</a></li>
+        <li>Jungers, W. L. (2009). Interlimb proportions in humans and fossil hominins: Variability and scaling. In F. E. Grine, J. G. Fleagle, &amp; R. E. Leakey (Eds.), <i>The first humans: Origin and early evolution of the genus Homo</i> (pp. 93–98). Springer Netherlands. <a href="https://doi.org/10.1007/978-1-4020-9980-9_9">https://doi.org/10.1007/978-1-4020-9980-9_9</a></li>
+        <li>Kordos, L., &amp; Begun, D. R. (2001). A new cranium of <i>Dryopithecus</i> from Rudabánya, Hungary. <i>Journal of Human Evolution</i>, <i>41</i>(6), 689–700. <a href="https://doi.org/10.1006/jhev.2001.0523">https://doi.org/10.1006/jhev.2001.0523</a></li>
+        <li>Krause, J., Fu, Q., Good, J. M., Viola, B., Shunkov, M. V., Derevianko, A. P., &amp; Pääbo, S. (2010). The complete mitochondrial DNA genome of an unknown hominin from southern Siberia. <i>Nature</i>, <i>464</i>(7290), 894–897. <a href="https://doi.org/10.1038/nature08976">https://doi.org/10.1038/nature08976</a></li>
+        <li>Lalueza-Fox, C., Römpler, H., Caramelli, D., Stäubert, C., Catalano, G., Hughes, D., Rohland, N., Pilli, E., Longo, L., Condemi, S., de la Rasilla, M., Fortea, J., Rosas, A., Stoneking, M., Schöneberg, T., Bertranpetit, J., &amp; Hofreiter, M. (2007). A melanocortin 1 receptor allele suggests varying pigmentation among Neanderthals. <i>Science</i>, <i>318</i>(5855), 1453–1455. <a href="https://doi.org/10.1126/science.1147417">https://doi.org/10.1126/science.1147417</a></li>
+        <li>Langergraber, K. E., Prüfer, K., Rowney, C., Boesch, C., Crockford, C., Fawcett, K., Inoue, E., Inoue-Muruyama, M., Mitani, J. C., Muller, M. N., Robbins, M. M., Schubert, G., Stoinski, T. S., Viola, B., Watts, D., Wittig, R. M., Wrangham, R. W., Zuberbühler, K., Pääbo, S., &amp; Vigilant, L. (2012). Generation times in wild chimpanzees and gorillas suggest earlier divergence times in great ape and human evolution. <i>Proceedings of the National Academy of Sciences</i>, <i>109</i>(39), 15716–15721. <a href="https://doi.org/10.1073/pnas.1211740109">https://doi.org/10.1073/pnas.1211740109</a></li>
+        <li>Leakey, L. S. B. (1959). A new fossil skull from Olduvai. <i>Nature</i>, <i>184</i>(4685), 491–493. <a href="https://doi.org/10.1038/184491a0">https://doi.org/10.1038/184491a0</a></li>
+        <li>Leakey, L. S. B., Tobias, P. V., &amp; Napier, J. R. (1964). A new species of the genus <i>Homo</i> from Olduvai Gorge. <i>Nature</i>, <i>202</i>(4927), 7–9. <a href="https://doi.org/10.1038/202007a0">https://doi.org/10.1038/202007a0</a></li>
+        <li>Leakey, M. D., &amp; Hay, R. L. (1979). Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania. <i>Nature</i>, <i>278</i>(5702), 317–323. <a href="https://doi.org/10.1038/278317a0">https://doi.org/10.1038/278317a0</a></li>
+        <li>Leakey, M. G., Feibel, C. S., McDougall, I., &amp; Walker, A. (1995). New four-million-year-old hominid species from Kanapoi and Allia Bay, Kenya. <i>Nature</i>, <i>376</i>(6541), 565–571. <a href="https://doi.org/10.1038/376565a0">https://doi.org/10.1038/376565a0</a></li>
+        <li>Leakey, M. G., Spoor, F., Brown, F. H., Gathogo, P. N., Kiarie, C., Leakey, L. N., &amp; McDougall, I. (2001). New hominin genus from eastern Africa shows diverse middle Pliocene lineages. <i>Nature</i>, <i>410</i>(6827), 433–440. <a href="https://doi.org/10.1038/35068500">https://doi.org/10.1038/35068500</a></li>
+        <li>Leakey, M. G., Spoor, F., Dean, M. C., Feibel, C. S., Antón, S. C., Kiarie, C., &amp; Leakey, L. N. (2012). New fossils from Koobi Fora in northern Kenya confirm taxonomic diversity in early <i>Homo</i>. <i>Nature</i>, <i>488</i>(7410), 201–204. <a href="https://doi.org/10.1038/nature11322">https://doi.org/10.1038/nature11322</a></li>
+        <li>Lepre, C. J., Roche, H., Kent, D. V., Harmand, S., Quinn, R. L., Brugal, J.-P., Texier, P.-J., Lenoble, A., &amp; Feibel, C. S. (2011). An earlier origin for the Acheulian. <i>Nature</i>, <i>477</i>(7362), 82–85. <a href="https://doi.org/10.1038/nature10372">https://doi.org/10.1038/nature10372</a></li>
+        <li>Lordkipanidze, D., Ponce de León, M. S., Margvelashvili, A., Rak, Y., Rightmire, G. P., Vekua, A., &amp; Zollikofer, C. P. E. (2013). A complete skull from Dmanisi, Georgia, and the evolutionary biology of early <i>Homo</i>. <i>Science</i>, <i>342</i>(6156), 326–331. <a href="https://doi.org/10.1126/science.1238484">https://doi.org/10.1126/science.1238484</a></li>
+        <li>MakeHuman Community. (2020). <i>MakeHuman base mesh hm08, morph targets and rigs</i> [Data set]. <a href="http://www.makehumancommunity.org/">http://www.makehumancommunity.org/</a></li>
+        <li>McBrearty, S., &amp; Jablonski, N. G. (2005). First fossil chimpanzee. <i>Nature</i>, <i>437</i>(7055), 105–108. <a href="https://doi.org/10.1038/nature04008">https://doi.org/10.1038/nature04008</a></li>
+        <li>McNulty, K. P., Begun, D. R., Kelley, J., Manthi, F. K., &amp; Mbua, E. N. (2015). A systematic revision of <i>Proconsul</i> with the description of a new genus of early Miocene hominoid. <i>Journal of Human Evolution</i>, <i>84</i>, 42–61. <a href="https://doi.org/10.1016/j.jhevol.2015.03.009">https://doi.org/10.1016/j.jhevol.2015.03.009</a></li>
+        <li>Meyer, M., Arsuaga, J.-L., de Filippo, C., Nagel, S., Aximu-Petri, A., Nickel, B., Martínez, I., Gracia, A., Bermúdez de Castro, J. M., Carbonell, E., Viola, B., Kelso, J., Prüfer, K., &amp; Pääbo, S. (2016). Nuclear DNA sequences from the Middle Pleistocene Sima de los Huesos hominins. <i>Nature</i>, <i>531</i>(7595), 504–507. <a href="https://doi.org/10.1038/nature17405">https://doi.org/10.1038/nature17405</a></li>
+        <li>Morgan, M. E., Lewton, K. L., Kelley, J., Otárola-Castillo, E., Barry, J. C., Flynn, L. J., &amp; Pilbeam, D. (2015). A partial hominoid innominate from the Miocene of Pakistan: Description and preliminary analyses. <i>Proceedings of the National Academy of Sciences</i>, <i>112</i>(1), 82–87. <a href="https://doi.org/10.1073/pnas.1420275111">https://doi.org/10.1073/pnas.1420275111</a></li>
+        <li>Moyà-Solà, S., &amp; Köhler, M. (1996). A <i>Dryopithecus</i> skeleton and the origins of great-ape locomotion. <i>Nature</i>, <i>379</i>(6561), 156–159. <a href="https://doi.org/10.1038/379156a0">https://doi.org/10.1038/379156a0</a></li>
+        <li>Natural Earth. (n.d.). <i>1:50m cultural and physical vectors</i> (Version 4.1.0) [Data set]. <a href="https://www.naturalearthdata.com/">https://www.naturalearthdata.com/</a></li>
+        <li>Olalde, I., Allentoft, M. E., Sánchez-Quinto, F., Santpere, G., Chiang, C. W. K., DeGiorgio, M., Prado-Martinez, J., Rodríguez, J. A., Rasmussen, S., Quilez, J., Ramírez, O., Marigorta, U. M., Fernández-Callejo, M., Prada, M. E., Encinas, J. M. V., Nielsen, R., Netea, M. G., Novembre, J., Sturm, R. A., . . . Lalueza-Fox, C. (2014). Derived immune and ancestral pigmentation alleles in a 7,000-year-old Mesolithic European. <i>Nature</i>, <i>507</i>(7491), 225–228. <a href="https://doi.org/10.1038/nature12960">https://doi.org/10.1038/nature12960</a></li>
+        <li>Pilbeam, D. (1982). New hominoid skull material from the Miocene of Pakistan. <i>Nature</i>, <i>295</i>(5846), 232–234. <a href="https://doi.org/10.1038/295232a0">https://doi.org/10.1038/295232a0</a></li>
+        <li>Reich, D., Green, R. E., Kircher, M., Krause, J., Patterson, N., Durand, E. Y., Viola, B., Briggs, A. W., Stenzel, U., Johnson, P. L. F., Maricic, T., Good, J. M., Marques-Bonet, T., Alkan, C., Fu, Q., Mallick, S., Li, H., Meyer, M., Eichler, E. E., . . . Pääbo, S. (2010). Genetic history of an archaic hominin group from Denisova Cave in Siberia. <i>Nature</i>, <i>468</i>(7327), 1053–1060. <a href="https://doi.org/10.1038/nature09710">https://doi.org/10.1038/nature09710</a></li>
+        <li>Richmond, B. G., Aiello, L. C., &amp; Wood, B. A. (2002). Early hominin limb proportions. <i>Journal of Human Evolution</i>, <i>43</i>(4), 529–548. <a href="https://doi.org/10.1016/s0047-2484(02)90594-4">https://doi.org/10.1016/s0047-2484(02)90594-4</a></li>
+        <li>Richmond, B. G., &amp; Whalen, M. (2001). Forelimb function, bone curvature and phylogeny of <i>Sivapithecus</i>. In L. de Bonis, G. D. Koufos, &amp; P. Andrews (Eds.), <i>Hominoid evolution and climatic change in Europe: Vol. 2. Phylogeny of the Neogene hominoid primates of Eurasia</i> (pp. 326–348). Cambridge University Press. <a href="https://doi.org/10.1017/cbo9780511600449.015">https://doi.org/10.1017/cbo9780511600449.015</a></li>
+        <li>Rizal, Y., Westaway, K. E., Zaim, Y., van den Bergh, G. D., Bettis, E. A., Morwood, M. J., Huffman, O. F., Grün, R., Joannes-Boyau, R., Bailey, R. M., Sidarto, Westaway, M. C., Kurniawan, I., Moore, M. W., Storey, M., Aziz, F., Suminto, Zhao, J.-X., Aswan, . . . Ciochon, R. L. (2020). Last appearance of <i>Homo erectus</i> at Ngandong, Java, 117,000–108,000 years ago. <i>Nature</i>, <i>577</i>(7790), 381–385. <a href="https://doi.org/10.1038/s41586-019-1863-2">https://doi.org/10.1038/s41586-019-1863-2</a></li>
+        <li>Roksandic, M., Radović, P., Wu, X., &amp; Bae, C. J. (2022). Resolving the “muddle in the middle”: The case for <i>Homo bodoensis</i> sp. nov. <i>Evolutionary Anthropology: Issues, News, and Reviews</i>, <i>31</i>(1), 20–29. <a href="https://doi.org/10.1002/evan.21929">https://doi.org/10.1002/evan.21929</a></li>
+        <li>Senut, B., Pickford, M., Gommery, D., Mein, P., Cheboi, K., &amp; Coppens, Y. (2001). First hominid from the Miocene (Lukeino Formation, Kenya). <i>Comptes Rendus de l&#x27;Académie des Sciences - Series IIA - Earth and Planetary Science</i>, <i>332</i>(2), 137–144. <a href="https://doi.org/10.1016/s1251-8050(01)01529-4">https://doi.org/10.1016/s1251-8050(01)01529-4</a></li>
+        <li>Slon, V., Mafessoni, F., Vernot, B., de Filippo, C., Grote, S., Viola, B., Hajdinjak, M., Peyrégne, S., Nagel, S., Brown, S., Douka, K., Higham, T., Kozlikin, M. B., Shunkov, M. V., Derevianko, A. P., Kelso, J., Meyer, M., Prüfer, K., &amp; Pääbo, S. (2018). The genome of the offspring of a Neanderthal mother and a Denisovan father. <i>Nature</i>, <i>561</i>(7721), 113–116. <a href="https://doi.org/10.1038/s41586-018-0455-x">https://doi.org/10.1038/s41586-018-0455-x</a></li>
+        <li>Smithsonian Institution. (n.d.). <i>Human evolution evidence</i>. Smithsonian National Museum of Natural History, Human Origins Program. <a href="https://humanorigins.si.edu/evidence">https://humanorigins.si.edu/evidence</a></li>
+        <li>Spoor, F., Gunz, P., Neubauer, S., Stelzer, S., Scott, N., Kwekason, A., &amp; Dean, M. C. (2015). Reconstructed <i>Homo habilis</i> type OH 7 suggests deep-rooted species diversity in early <i>Homo</i>. <i>Nature</i>, <i>519</i>(7541), 83–86. <a href="https://doi.org/10.1038/nature14224">https://doi.org/10.1038/nature14224</a></li>
+        <li>Susanna, I., Alba, D. M., Almécija, S., &amp; Moyà-Solà, S. (2014). The vertebral remains of the late Miocene great ape <i>Hispanopithecus laietanus</i> from Can Llobateres 2 (Vallès-Penedès Basin, NE Iberian Peninsula). <i>Journal of Human Evolution</i>, <i>73</i>, 15–34. <a href="https://doi.org/10.1016/j.jhevol.2014.05.009">https://doi.org/10.1016/j.jhevol.2014.05.009</a></li>
+        <li>Sutikna, T., Tocheri, M. W., Morwood, M. J., Saptomo, E. W., Jatmiko, Awe, R. D., Wasisto, S., Westaway, K. E., Aubert, M., Li, B., Zhao, J.-X., Storey, M., Alloway, B. V., Morley, M. W., Meijer, H. J. M., van den Bergh, G. D., Grün, R., Dosseto, A., Brumm, A., . . . Roberts, R. G. (2016). Revised stratigraphy and chronology for <i>Homo floresiensis</i> at Liang Bua in Indonesia. <i>Nature</i>, <i>532</i>(7599), 366–369. <a href="https://doi.org/10.1038/nature17179">https://doi.org/10.1038/nature17179</a></li>
+        <li>Suwa, G., Kono, R. T., Katoh, S., Asfaw, B., &amp; Beyene, Y. (2007). A new species of great ape from the late Miocene epoch in Ethiopia. <i>Nature</i>, <i>448</i>(7156), 921–924. <a href="https://doi.org/10.1038/nature06113">https://doi.org/10.1038/nature06113</a></li>
+        <li>Tsutaya, T., Sawafuji, R., Taurozzi, A. J., Fagernäs, Z., Patramanis, I., Troché, G., Mackie, M., Gakuhari, T., Oota, H., Tsai, C.-H., Olsen, J. V., Kaifu, Y., Chang, C.-H., Cappellini, E., &amp; Welker, F. (2025). A male Denisovan mandible from Pleistocene Taiwan. <i>Science</i>, <i>388</i>(6743), 176–180. <a href="https://doi.org/10.1126/science.ads3888">https://doi.org/10.1126/science.ads3888</a></li>
+        <li>Urciuoli, A., &amp; Alba, D. M. (2023). Systematics of Miocene apes: State of the art of a neverending controversy. <i>Journal of Human Evolution</i>, <i>175</i>, Article 103309. <a href="https://doi.org/10.1016/j.jhevol.2022.103309">https://doi.org/10.1016/j.jhevol.2022.103309</a></li>
+        <li>van den Bergh, G. D., Kaifu, Y., Kurniawan, I., Kono, R. T., Brumm, A., Setiyabudi, E., Aziz, F., &amp; Morwood, M. J. (2016). <i>Homo floresiensis</i>-like fossils from the early Middle Pleistocene of Flores. <i>Nature</i>, <i>534</i>(7606), 245–248. <a href="https://doi.org/10.1038/nature17999">https://doi.org/10.1038/nature17999</a></li>
+        <li>Villmoare, B., Kimbel, W. H., Seyoum, C., Campisano, C. J., DiMaggio, E. N., Rowan, J., Braun, D. R., Arrowsmith, J. R., &amp; Reed, K. E. (2015). Early <i>Homo</i> at 2.8 Ma from Ledi-Geraru, Afar, Ethiopia. <i>Science</i>, <i>347</i>(6228), 1352–1355. <a href="https://doi.org/10.1126/science.aaa1343">https://doi.org/10.1126/science.aaa1343</a></li>
+        <li>Walker, A., Leakey, R. E., Harris, J. M., &amp; Brown, F. H. (1986). 2.5-Myr <i>Australopithecus boisei</i> from west of Lake Turkana, Kenya. <i>Nature</i>, <i>322</i>(6079), 517–522. <a href="https://doi.org/10.1038/322517a0">https://doi.org/10.1038/322517a0</a></li>
+        <li>Welker, F., Ramos-Madrigal, J., Gutenbrunner, P., Mackie, M., Tiwary, S., Rakownikow Jersie-Christensen, R., Chiva, C., Dickinson, M. R., Kuhlwilm, M., de Manuel, M., Gelabert, P., Martinón-Torres, M., Margvelashvili, A., Arsuaga, J. L., Carbonell, E., Marques-Bonet, T., Penkman, K., Sabidó, E., Cox, J., . . . Cappellini, E. (2020). The dental proteome of <i>Homo antecessor</i>. <i>Nature</i>, <i>580</i>(7802), 235–238. <a href="https://doi.org/10.1038/s41586-020-2153-8">https://doi.org/10.1038/s41586-020-2153-8</a></li>
+        <li>White, T. D., Asfaw, B., Beyene, Y., Haile-Selassie, Y., Lovejoy, C. O., Suwa, G., &amp; WoldeGabriel, G. (2009). <i>Ardipithecus ramidus</i> and the paleobiology of early hominids. <i>Science</i>, <i>326</i>(5949), 64–86. <a href="https://doi.org/10.1126/science.1175802">https://doi.org/10.1126/science.1175802</a></li>
+        <li>Wood, B., &amp; Boyle, E. K. (2016). Hominin taxic diversity: Fact or fantasy? <i>American Journal of Physical Anthropology</i>, <i>159</i>(S61), 37–78. <a href="https://doi.org/10.1002/ajpa.22902">https://doi.org/10.1002/ajpa.22902</a></li>
+        <!-- REFERENCES:END -->
+      </ul>
+    </details>
   </section>
 
   <footer>
@@ -962,6 +1182,9 @@ function select(i){
   // 3D life reconstruction
   if (window.updateLife) window.updateLife(s);
 
+  // branching tree
+  if (window.updateTree) window.updateTree(s);
+
   // bare-skull lateral view (endocranial tint scaled to capacity)
   svSpec.textContent = s.spec;
   headStage.classList.remove("show");
@@ -1119,5 +1342,6 @@ SPECIES.forEach(s => ensurePhoto(s));
 </script>
 <script src="models/models.js"></script>
 <script src="life.js"></script>
+<script src="tree.js"></script>
 </body>
 </html>
